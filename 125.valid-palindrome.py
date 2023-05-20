@@ -6,18 +6,15 @@
 
 
 # @lc code=start
+import re
+
+
 class Solution:
     def isPalindrome(self, s: str) -> bool:
-        s_list = []
-        for _s in s:
-            if _s.isalnum():
-                s_list.append(_s.lower())
+        s = s.lower()
+        s = re.sub("[^a-z0-9]", "", s)
 
-        for i, char in enumerate(s_list):
-            if char != s_list[-(i + 1)]:
-                return False
-
-        return True
+        return s == s[::-1]
 
 
 # @lc code=end

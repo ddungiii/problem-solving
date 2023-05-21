@@ -11,13 +11,7 @@ class Solution:
         """
         Do not return anything, modify s in-place instead.
         """
-        for i, char in enumerate(s):
-            temp = s[-(i + 1)]
-            s[-(i + 1)] = char
-            s[i] = temp
-
-            if i == len(s) // 2 - 1:
-                break
+        s.reverse()
 
 
 # @lc code=end

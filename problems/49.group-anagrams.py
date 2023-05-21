@@ -13,11 +13,7 @@ class Solution:
     def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
         dict = defaultdict(list)
         for str in strs:
-            str_list = list(str)
-            str_list.sort()
-            key = "".join(str_list)
-
-            dict[key].append(str)
+            dict["".join(sorted(str))].append(str)
 
         return dict.values()
 

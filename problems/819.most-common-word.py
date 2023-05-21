@@ -6,25 +6,20 @@
 
 
 # @lc code=start
-from lib2to3.fixes.fix_print import parend_expr
+from pydoc import splitdoc
 import re
 from typing import Counter
 
 
 class Solution:
     def mostCommonWord(self, paragraph: str, banned: list[str]) -> str:
-        # Ban log word first
-        banned.sort(key=lambda ban: -len(ban))
+        words = [
+            word
+            for word in re.sub("[^\w]", " ", paragraph).lower().split()
+            if word not in banned
+        ]
 
-        paragraph = paragraph.lower()
-
-        for banned_str in banned:
-            paragraph = paragraph.replace(banned_str, "")
-
-        paragraph = re.sub("[!?',;.]", " ", paragraph)
-
-        paragraph_list = paragraph.split()
-        counter = Counter(paragraph_list)
+        counter = Counter(words)
 
         return counter.most_common(1)[0][0]
 

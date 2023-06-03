@@ -12,25 +12,30 @@ import time
 
 class Solution:
     def longestPalindrome(self, s: str) -> str:
-        def isPalindrome(s: str) -> bool:
-            return s == s[::-1]
+        def findPalindromeFromCenter(left: int, right: int) -> str:
+            while left >= 0 and right <= len(s) - 1 and s[left] == s[right]:
+                left -= 1
+                right += 1
+            return s[left + 1 : right]
 
         if len(s) < 2 or s == s[::-1]:
             return s
 
-        substr = s[0]
+        result = ""
+        for i in range(len(s)):
+            result = max(
+                result,
+                findPalindromeFromCenter(i, i + 1),
+                findPalindromeFromCenter(i, i + 2),
+                key=len,
+            )
 
-        for i in range(0, len(s) - 1):
-            for j in range(i + len(substr), len(s)):
-                if isPalindrome(s[i : j + 1]):
-                    substr = s[i : j + 1]
-
-        return substr
+        return result
 
     # @lc code=end
 
 
-# soluion = Solution()
-# start = time.time()
-# print(soluion.longestPalindrome(input("input: ")))
-# print(f"time: {time.time() - start:.4f}s ")
+soluion = Solution()
+start = time.time()
+print(soluion.longestPalindrome(input("input: ")))
+print(f"time: {time.time() - start:.4f}s ")

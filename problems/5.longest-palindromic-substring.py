@@ -7,25 +7,35 @@
 
 # @lc code=start
 import re
+import time
 
 
 class Solution:
     def longestPalindrome(self, s: str) -> str:
         def isPalindrome(s: str) -> bool:
-            print(f"isPalindrome({s})")
             s = re.sub("[^a-z0-9]", "", s)
             return s == s[::-1]
 
-        substr = ""
+        if len(s) < 2 or s == s[::-1]:
+            return s
+
+        substr = s[0]
 
         for i in range(len(s)):
-            print(f"i: {i}")
-            for j in range(i + 1 + len(substr), len(s)):
-                print(f"  j: {j}")
-                if isPalindrome(s[i:j]):
-                    substr = s[i:j]
+            # print(f"i: {i}")
+            # print(f"substr: {substr}")
+            for j in range(i + len(substr), len(s)):
+                # print(f"  j: {j}")
+                if isPalindrome(s[i : j + 1]):
+                    substr = s[i : j + 1]
 
-        print(substr)
+        # print(f"result: {substr}")
+        return substr
+
+    # @lc code=end
 
 
-# @lc code=end
+soluion = Solution()
+start = time.time()
+print(soluion.longestPalindrome(input("input: ")))
+print(f"time: {time.time() - start:.4f}s ")

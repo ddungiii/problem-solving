@@ -10,12 +10,12 @@
 
 class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:
-        for i in range(len(nums)):
-            for j in range(i + 1, len(nums)):
-                if nums[i] + nums[j] == target:
-                    return [i, j]
+        for i, n in enumerate(nums):
+            complement = target - n
 
-        return [0, 2]
+            rest = nums[i + 1 :]
+            if complement in rest:
+                return [i, rest.index(complement) + i + 1]
 
 
 # @lc code=end
@@ -25,7 +25,6 @@ soluion = Solution()
 nums_string = input("nums: ")
 nums_list = nums_string.split()
 nums = [int(n) for n in nums_list]
-print(f"nums: {nums}")
 target = int(input("target: "))
 start = time.time()
 print(soluion.twoSum(nums, target))

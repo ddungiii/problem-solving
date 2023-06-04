@@ -10,12 +10,15 @@
 
 class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:
+        num_dict = {}
+        for i, n in enumerate(nums):
+            num_dict[n] = i
+
         for i, n in enumerate(nums):
             complement = target - n
 
-            rest = nums[i + 1 :]
-            if complement in rest:
-                return [i, rest.index(complement) + i + 1]
+            if complement in num_dict and num_dict[complement] != i:
+                return [i, num_dict[complement]]
 
 
 # @lc code=end

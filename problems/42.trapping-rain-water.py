@@ -10,43 +10,23 @@
 
 class Solution:
     def trap(self, height: list[int]) -> int:
-        total = 0
-        len_heights = len(height)
-        top_index = height.index(max(height))
-        reversed_height = height[::-1]
+        stack = []
+        volume = 0
 
-        def find_trapped_water(height: list[int], left: int) -> tuple[int, int]:
-            right = left + 1
-            for _ in range(len_heights - left):
-                if right >= len_heights or height[left] <= height[right]:
+        for i in range(len(height)):
+            while stack and height[i] > height[stack[-1]]:
+                top = stack.pop()
+                if not len(stack):
                     break
 
-                right += 1
-            m = min(height[left], height[right])
+                distance = i - stack[-1] - 1
+                water = min(height[i], height[stack[-1]]) - height[top]
 
-            trapped = [m - h for h in height[left + 1 : right]]
+                volume += distance * water
 
-            return right, sum(trapped)
+            stack.append(i)
 
-        # find trapped water from left
-        left = 0
-        while 1:
-            if left >= top_index - 1:
-                break
-            left, trapped = find_trapped_water(height, left)
-
-            total += trapped
-
-        # find trapped water from right
-        right = 0
-        while 1:
-            if right >= len_heights - top_index - 1:
-                break
-            right, trapped = find_trapped_water(reversed_height, right)
-
-            total += trapped
-
-        return total
+        return volume
 
 
 # @lc code=end

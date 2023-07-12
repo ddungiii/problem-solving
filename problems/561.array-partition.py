@@ -8,10 +8,7 @@
 # @lc code=start
 class Solution:
     def arrayPairSum(self, nums: list[int]) -> int:
-        nums.sort()
-        filtered = [n for i, n in enumerate(nums) if i % 2 == 0]
-
-        return sum(filtered)
+        return sum(sorted(nums)[::2])
 
 
 # @lc code=end

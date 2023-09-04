@@ -6,18 +6,26 @@
 
 
 # @lc code=start
+import enum
+
+
 class Solution:
     def productExceptSelf(self, nums: list[int]) -> list[int]:
-        def product_all(nums: list[int]) -> int:
-            result = 1
-            for num in nums:
-                result *= num
+        result = []
+        element = 1
 
-            return result
+        # product left except self
+        for num in nums:
+            result.append(element)
+            element *= num
 
-        all = product_all(nums)
+        element = 1
+        # product left except self
+        for i, num in enumerate(nums):
+            result[len(nums) - 1 - i] *= element
+            element *= nums[len(nums) - 1 - i]
 
-        return list(map(lambda x: int(all / x) if x else all, nums))
+        return result
 
 
 # @lc code=end

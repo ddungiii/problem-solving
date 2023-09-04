@@ -12,12 +12,14 @@ class Solution:
 
 
 # @lc code=end
+
 import time
 
-soluion = Solution()
-start = time.time()
+solution = Solution()
 input_string = input("nums: ")
 input_list = input_string.split()
 input = [int(str) for str in input_list]
-print(soluion.arrayPairSum(input))
-print(f"time: {time.time() - start:.4f}s ")
+
+start = time.time()
+print(solution.arrayPairSum(input))
+print(f"time: {time.time() - start:.4f}s")

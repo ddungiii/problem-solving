@@ -19,12 +19,10 @@ class Solution:
             current_price = prices[i]
 
             if buy_price > current_price:
-                buy, sell, profit = i, i, 0
+                buy, sell = i, i
                 continue
 
-            current_profit = current_price - buy_price
-            if current_profit > profit:
-                profit = current_profit
+            profit = max(current_price - buy_price, profit)
 
         return profit
 

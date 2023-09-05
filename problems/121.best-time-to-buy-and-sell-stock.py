@@ -6,23 +6,20 @@
 
 
 # @lc code=start
+import sys
+
+
 class Solution:
     def maxProfit(self, prices: list[int]) -> int:
         if len(prices) == 0:
             return 0
 
-        buy, sell, profit = 0, 0, 0
+        buy_price = sys.maxsize
+        profit = 0
 
-        for i in range(1, len(prices)):
-            buy_price = prices[buy]
-            sell_price = prices[sell]
-            current_price = prices[i]
-
-            if buy_price > current_price:
-                buy, sell = i, i
-                continue
-
-            profit = max(current_price - buy_price, profit)
+        for price in prices:
+            buy_price = min(price, buy_price)
+            profit = max(profit, price - buy_price)
 
         return profit
 

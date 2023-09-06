@@ -19,22 +19,19 @@ class ListNode:
 
 class Solution:
     def isPalindrome(self, head: Optional[ListNode]) -> bool:
-        if not head:
-            return True
+        rev = None
+        slow, fast = head, head
 
-        q: Deque = collections.deque()
-        node = head
+        while fast and fast.next:
+            fast = fast.next.next
+            rev, rev.next, slow = slow, rev, slow.next
+        if fast:
+            slow = slow.next
 
-        # convert linked list to list
-        while node:
-            q.append(node.val)
-            node = node.next
+        while rev and rev.val == slow.val:
+            rev, slow = rev.next, slow.next
 
-        while len(q) > 1:
-            if q.popleft() != q.pop():
-                return False
-
-        return True
+        return not rev
 
 
 # @lc code=end

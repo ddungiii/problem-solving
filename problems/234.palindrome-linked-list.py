@@ -7,7 +7,8 @@
 
 # @lc code=start
 # Definition for singly-linked list.
-from typing import Optional
+import collections
+from typing import Deque, Optional
 
 
 class ListNode:
@@ -21,16 +22,16 @@ class Solution:
         if not head:
             return True
 
-        l = []
+        q: Deque = collections.deque()
         node = head
 
         # convert linked list to list
         while node:
-            l.append(node.val)
+            q.append(node.val)
             node = node.next
 
-        while len(l) > 1:
-            if l.pop(0) != l.pop():
+        while len(q) > 1:
+            if q.popleft() != q.pop():
                 return False
 
         return True

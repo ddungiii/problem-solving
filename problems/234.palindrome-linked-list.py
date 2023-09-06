@@ -18,28 +18,20 @@ class ListNode:
 
 class Solution:
     def isPalindrome(self, head: Optional[ListNode]) -> bool:
-        if head is None:
+        if not head:
             return True
 
-        length = 0
-        _head = head
-        while _head:
-            length += 1
-            _head = _head.next
+        l = []
+        node = head
 
-        stack = []
-        for _ in range(int(length / 2)):
-            stack.append(head.val)
-            head = head.next
+        # convert linked list to list
+        while node:
+            l.append(node.val)
+            node = node.next
 
-        if length % 2 == 1:
-            head = head.next
-
-        for _ in range(int(length / 2)):
-            val = stack.pop()
-            if val != head.val:
+        while len(l) > 1:
+            if l.pop(0) != l.pop():
                 return False
-            head = head.next
 
         return True
 

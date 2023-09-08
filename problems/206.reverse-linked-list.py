@@ -18,13 +18,16 @@ from typing import Optional
 
 class Solution:
     def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        node, prev = head, None
+        def reverse(
+            node: Optional[ListNode], prev: Optional[ListNode] = None
+        ) -> Optional[ListNode]:
+            if not node:
+                return prev
 
-        while node:
             next, node.next = node.next, prev
-            prev, node = node, next
+            return reverse(next, node)
 
-        return prev
+        return reverse(head)
 
 
 # @lc code=end

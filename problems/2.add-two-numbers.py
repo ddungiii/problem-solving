@@ -20,6 +20,21 @@ class Solution:
     def addTwoNumbers(
         self, l1: Optional[ListNode], l2: Optional[ListNode]
     ) -> Optional[ListNode]:
+        def _get_len(l: Optional[ListNode]) -> int:
+            if not l:
+                return 0
+
+            node = l
+            len = 0
+            while node:
+                len += 1
+                node = node.next
+
+            return len
+
+        if _get_len(l1) < _get_len(l2):
+            l1, l2 = l2, l1
+
         head = l1
         carry = 0
         while l1:

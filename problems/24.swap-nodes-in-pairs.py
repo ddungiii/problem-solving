@@ -18,22 +18,13 @@ from typing import Optional
 
 class Solution:
     def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        if not head:
-            return None
+        if head and head.next:
+            node = head.next
+            head.next = self.swapPairs(node.next)
+            node.next = head
+            return node
 
-        root = prev = ListNode()
-        prev.next = head
-        while head and head.next:
-            b = head.next
-            head.next = b.next
-            b.next = head
-
-            prev.next = b
-
-            head = head.next
-            prev = prev.next.next
-
-        return root.next
+        return head
 
 
 # @lc code=end

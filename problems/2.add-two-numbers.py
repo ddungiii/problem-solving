@@ -20,38 +20,23 @@ class Solution:
     def addTwoNumbers(
         self, l1: Optional[ListNode], l2: Optional[ListNode]
     ) -> Optional[ListNode]:
-        def _get_len(l: Optional[ListNode]) -> int:
-            if not l:
-                return 0
-
-            node = l
-            len = 0
-            while node:
-                len += 1
-                node = node.next
-
-            return len
-
-        if _get_len(l1) < _get_len(l2):
-            l1, l2 = l2, l1
-
-        head = l1
+        root = head = ListNode(0)
         carry = 0
-        while l1:
-            val1 = l1.val
-            val2 = l2.val if l2 else 0
-            carry, val3 = divmod(val1 + val2 + carry, 10)
-            l1.val = val3
 
-            if l1.next is None:
-                if carry:
-                    l1.next = ListNode(carry)
-                    break
+        while l1 or l2 or carry:
+            sum = 0
+            if l1:
+                sum += l1.val
+                l1 = l1.next
+            if l2:
+                sum += l2.val
+                l2 = l2.next
 
-            l1 = l1.next
-            l2 = l2.next if l2 else None
+            carry, val = divmod(sum + carry, 10)
+            head.next = ListNode(val)
+            head = head.next
 
-        return head
+        return root.next
 
 
 # @lc code=end

@@ -13,26 +13,46 @@ class ListNode:
         self.next = next
 
 
+from enum import Enum
 from typing import Optional
 
 
 class Solution:
     def oddEvenList(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        def _is_even(val: int) -> bool:
-            return val % 2 == 0
+        class Type(Enum):
+            ODD = 1
+            EVEN = 2
+
+        def _get_type(val: int) -> Type:
+            return Type.EVEN if val % 2 == 0 else Type.ODD
 
         if not head:
             return None
+        root_type = _get_type(head.val)
 
-        head.next = self.oddEvenList(head.next)
-        if head.next and _is_even(head.val) and not _is_even(head.next.val):
-            next = head.next
-            head.next, next.next = next.next, head
-            head = next
+        def _is_root_type(val: int) -> bool:
+            return _get_type(val) == root_type
 
-            head.next = self.oddEvenList(head.next)
+        def _odd_even_list(head: Optional[ListNode]) -> Optional[ListNode]:
+            if not head:
+                return None
 
-        return head
+            head.next = _odd_even_list(head.next)
+
+            if (
+                head.next
+                and not _is_root_type(head.val)
+                and _is_root_type(head.next.val)
+            ):
+                next = head.next
+                head.next, next.next = next.next, head
+                head = next
+
+                head.next = _odd_even_list(head.next)
+
+            return head
+
+        return _odd_even_list(head)
 
 
 # @lc code=end

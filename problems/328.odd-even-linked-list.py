@@ -7,52 +7,38 @@
 
 # @lc code=start
 # Definition for singly-linked list.
+from typing import Optional
+
+
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
 
 
-from enum import Enum
-from typing import Optional
-
-
 class Solution:
     def oddEvenList(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        class Type(Enum):
-            ODD = 1
-            EVEN = 2
-
-        def _get_type(val: int) -> Type:
-            return Type.EVEN if val % 2 == 0 else Type.ODD
-
         if not head:
             return None
-        root_type = _get_type(head.val)
 
-        def _is_root_type(val: int) -> bool:
-            return _get_type(val) == root_type
+        odd_root = odd = ListNode()
+        even_root = even = ListNode()
 
-        def _odd_even_list(head: Optional[ListNode]) -> Optional[ListNode]:
-            if not head:
-                return None
+        is_odd = True
+        while head:
+            if is_odd:
+                odd.next = ListNode(head.val)
+                odd = odd.next
+            else:
+                even.next = ListNode(head.val)
+                even = even.next
 
-            head.next = _odd_even_list(head.next)
+            head = head.next
+            is_odd = not is_odd
 
-            if (
-                head.next
-                and not _is_root_type(head.val)
-                and _is_root_type(head.next.val)
-            ):
-                next = head.next
-                head.next, next.next = next.next, head
-                head = next
+        odd.next = even_root.next
 
-                head.next = _odd_even_list(head.next)
-
-            return head
-
-        return _odd_even_list(head)
+        return odd_root.next
 
 
 # @lc code=end

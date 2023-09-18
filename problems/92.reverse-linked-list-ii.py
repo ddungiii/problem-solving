@@ -20,23 +20,21 @@ class Solution:
     def reverseBetween(
         self, head: Optional[ListNode], left: int, right: int
     ) -> Optional[ListNode]:
-        l: list[int] = []
-        node = head
+        if not head and left == right:
+            return head
 
-        while node:
-            l.append(node.val)
-            node = node.next
+        root = start = ListNode()
+        root.next = head
+        for _ in range(left - 1):
+            start = start.next
+        end = start.next
 
-        reversed = l[left - 1 : right]
-        reversed.reverse()
+        for _ in range(right - left):
+            temp = start.next
+            start.next = end.next
+            end.next = end.next.next
 
-        l2: list[int] = l[: left - 1] + reversed + l[right:]
-
-        root = node2 = ListNode()
-
-        for element in l2:
-            node2.next = ListNode(element)
-            node2 = node2.next
+            start.next.next = temp
 
         return root.next
 

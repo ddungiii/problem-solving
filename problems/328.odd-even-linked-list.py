@@ -21,24 +21,16 @@ class Solution:
         if not head:
             return None
 
-        odd_root = odd = ListNode()
-        even_root = even = ListNode()
+        odd = head
+        even_root = even = head.next
 
-        is_odd = True
-        while head:
-            if is_odd:
-                odd.next = ListNode(head.val)
-                odd = odd.next
-            else:
-                even.next = ListNode(head.val)
-                even = even.next
+        while even and even.next:
+            odd.next, even.next = odd.next.next, even.next.next
+            odd, even = odd.next, even.next
 
-            head = head.next
-            is_odd = not is_odd
+        odd.next = even_root
 
-        odd.next = even_root.next
-
-        return odd_root.next
+        return head
 
 
 # @lc code=end

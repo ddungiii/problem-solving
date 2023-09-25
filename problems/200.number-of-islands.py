@@ -3,12 +3,14 @@
 #
 # [200] Number of Islands
 #
+from dis import disco
 from typing import List
 
 # @lc code=start
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        m, n = len(grid), len(grid[0])
+        n, m = len(grid), len(grid[0])
+        print(f"n: {n}, m: {m}")
         
         class Point:
             def __init__(self, x, y) -> None:
@@ -18,7 +20,7 @@ class Solution:
         def get_neighbors(point: Point):
             x, y = point.x, point.y
 
-            xs, ys = [x, x+1] if x < n-2 else [x], [y, y+1] if y < m-2 else [y]
+            xs, ys = [x, x+1] if x < n-1 else [x], [y, y+1] if y < m-1 else [y]
 
             neighbors = []
             for new_x in xs:
@@ -35,7 +37,7 @@ class Solution:
             x, y = point.x, point.y
             discoverd[x][y] = 1
 
-            if grid[x][y] == 1 and (x > 0 and grid[x-1][y] == 0) and (y > 0 and grid[x][y-1] == 0):
+            if grid[x][y] == "1" and (x > 0 and grid[x-1][y] == "0") and (y > 0 and grid[x][y-1] == "0"):
                 print("new!")
                 num_islands += 1
 
@@ -48,7 +50,7 @@ class Solution:
 
             return num_islands   
         
-        num_islands = dfs(0) 
+        num_islands = dfs(1) 
 
         return num_islands
         

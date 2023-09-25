@@ -36,6 +36,8 @@ class Solution:
         def dfs(num_islands: int, point: Point = Point(0, 0)):
             x, y = point.x, point.y
             discoverd[x][y] = 1
+            if num_islands == 0 and grid[x][y] == "1":
+                num_islands += 1
 
             if grid[x][y] == "1" and (x > 0 and grid[x-1][y] == "0") and (y > 0 and grid[x][y-1] == "0"):
                 print("new!")
@@ -50,7 +52,7 @@ class Solution:
 
             return num_islands   
         
-        num_islands = dfs(1) 
+        num_islands = dfs(0) 
 
         return num_islands
         

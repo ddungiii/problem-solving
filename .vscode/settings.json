@@ -1,4 +1,12 @@
 {
     "mypy.enabled": false,
     "mypy.dmypyExecutable": "/Users/ddungiii/.local/share/virtualenvs/leetcode-DGsXKhNL/bin/dmypy",
+    // "[python]": {
+    //     "editor.defaultFormatter": "ms-python.black-formatter",
+    //     "editor.formatOnSave": true,
+    // },
+    // not work... on python 3.7...
+    // "black-formatter.interpreter": [
+    //     "/Users/ddungiii/.local/share/virtualenvs/leetcode-DGsXKhNL/bin/python"
+    // ]
 }

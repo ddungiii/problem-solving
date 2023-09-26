@@ -1,3 +1,4 @@
 {
-    "python.analysis.typeCheckingMode": "basic"
+    "mypy.enabled": false,
+    "mypy.dmypyExecutable": "/Users/ddungiii/.local/share/virtualenvs/leetcode-DGsXKhNL/bin/dmypy",
 }

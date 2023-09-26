@@ -4,9 +4,7 @@
 # [1] Two Sum
 #
 
-
 # @lc code=start
-
 
 class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:

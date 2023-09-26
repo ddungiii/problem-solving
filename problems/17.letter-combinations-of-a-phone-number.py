@@ -25,7 +25,7 @@ class Solution:
         }
 
         letters: List[List[str]] = [digit_to_letter[int(digit)] for digit in digits]
-        result = [s for s in letters[0]]
+        result = [""]
         
         def dfs(i):
             if i > len(letters)-1:
@@ -39,7 +39,7 @@ class Solution:
             
             dfs(i+1)
         
-        dfs(1)
+        dfs(0)
 
         return result
 

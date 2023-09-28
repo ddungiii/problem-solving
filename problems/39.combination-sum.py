@@ -8,20 +8,20 @@ from typing import List
 # @lc code=start
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        def dfs(index, combs=[]):
-            if sum(combs) == target:
+        def dfs(sum, index, combs=[]):
+            if sum == target:
                 result.append(combs)
                 return
-            elif sum(combs) > target:
+            elif sum > target:
                 return
             
             for i in range(index, len(candidates)):
                 new_comb = combs[:]
                 new_comb.append(candidates[i])
-                dfs(i, new_comb)
+                dfs(sum + candidates[i], i, new_comb)
 
         result = []
-        dfs(0)
+        dfs(0, 0)
 
         return result
 

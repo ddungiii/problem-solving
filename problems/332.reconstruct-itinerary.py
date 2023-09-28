@@ -3,28 +3,26 @@
 #
 # [332] Reconstruct Itinerary
 #
+from collections import defaultdict
 from typing import List
 # @lc code=start
 class Solution:
     def findItinerary(self, tickets: List[List[str]]) -> List[str]:
-        tickets.sort(key=lambda ticket: [ticket[0], ticket[1]])
+        graph = defaultdict(list)
 
-        def dfs(tickets: List[List[str]], itinerary: List[str]):
-            if not len(tickets):
-                return itinerary
+        for key, value in sorted(tickets):
+            graph[key].append(value)
+
+        def dfs(node: str):
+            while graph[node]:
+                dfs(graph[node].pop(0))
+            route.append(node)
+
+        route =[]
+        dfs('JFK')
+        return route[::-1]
+
             
-            last = itinerary[-1]
-            
-            for i, ticket in enumerate(tickets):
-                if ticket[0] == last:
-                    new_tickets = tickets[:]
-                    new_tickets.pop(i)
-                    result = dfs(new_tickets, itinerary + [ticket[1]])
-                    if result:
-                        return result
-        
-        
-        return dfs(tickets, ["JFK"])
 
         
 # @lc code=end

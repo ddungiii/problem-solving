@@ -3,35 +3,38 @@
 #
 # [207] Course Schedule
 #
+from collections import defaultdict
 from typing import List
 from xmlrpc.client import getparser
 # @lc code=start
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        # If a Circular Dependency Exists, Fail to finish courses
         if not len(prerequisites):
             return True
         
-        graph = dict()
+        graph = defaultdict(list)
         for a, b in prerequisites:
-            graph[a] = b
+            graph[a].append(b)
 
-        result = True
-        def dfs(course: int):
-            print(course, graph, route)
-            if course in graph:
-                if graph[course] in route:
-                    return False
-
-                route.append(course)
-                print(route)
-                return dfs(graph.pop(course))
+        def dfs(i: int):
+            if i in trace:
+                return False
             
+            trace.add(i)
+            for x in graph[i]:
+                if not dfs(x):
+                    return False
+            trace.remove(i)
+
             return True
-        
-        route = []
-        
-        return dfs(prerequisites[0][0])
+
+        trace = set()
+
+        for x in list(graph):
+            if not dfs(x):
+                return False
+            
+        return True
         
 # @lc code=end
 

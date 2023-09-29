@@ -17,18 +17,24 @@ class Solution:
             graph[a].append(b)
 
         def dfs(i: int):
+            # Cyclic Graph
             if i in trace:
                 return False
+            
+            # Visited Already
+            if i in visited:
+                return True
             
             trace.add(i)
             for x in graph[i]:
                 if not dfs(x):
                     return False
             trace.remove(i)
+            visited.add(i)
 
             return True
 
-        trace = set()
+        trace, visited = set(), set()
 
         for x in list(graph):
             if not dfs(x):

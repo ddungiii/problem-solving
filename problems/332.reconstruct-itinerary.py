@@ -10,12 +10,12 @@ class Solution:
     def findItinerary(self, tickets: List[List[str]]) -> List[str]:
         graph = defaultdict(list)
 
-        for key, value in sorted(tickets):
+        for key, value in sorted(tickets, reverse=True):
             graph[key].append(value)
 
         def dfs(node: str):
             while graph[node]:
-                dfs(graph[node].pop(0))
+                dfs(graph[node].pop())
             route.append(node)
 
         route =[]

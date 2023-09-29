@@ -4,22 +4,22 @@
 # [332] Reconstruct Itinerary
 #
 from collections import defaultdict
+from pickletools import stackslice
 from typing import List
 # @lc code=start
 class Solution:
     def findItinerary(self, tickets: List[List[str]]) -> List[str]:
         graph = defaultdict(list)
 
-        for key, value in sorted(tickets, reverse=True):
+        for key, value in sorted(tickets):
             graph[key].append(value)
 
-        def dfs(node: str):
-            while graph[node]:
-                dfs(graph[node].pop())
-            route.append(node)
+        route, stack = [], ['JFK']
+        while stack:
+            while graph[stack[-1]]:
+                stack.append(graph[stack[-1]].pop(0))
+            route.append(stack.pop())
 
-        route =[]
-        dfs('JFK')
         return route[::-1]
 
             

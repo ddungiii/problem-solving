@@ -5,6 +5,8 @@
 #
 import enum
 from typing import List
+
+
 # @lc code=start
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
@@ -14,7 +16,7 @@ class Solution:
                 return
             elif sum > target:
                 return
-            
+
             for i in range(index, len(candidates)):
                 new_comb = combs[:]
                 new_comb.append(candidates[i])
@@ -25,6 +27,5 @@ class Solution:
 
         return result
 
-        
-# @lc code=end
 
+# @lc code=end

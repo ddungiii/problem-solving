@@ -6,6 +6,7 @@
 
 # @lc code=start
 
+
 class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:
         num_dict = {}

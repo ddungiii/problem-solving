@@ -12,7 +12,7 @@ class Solution:
     def letterCombinations(self, digits: str) -> List[str]:
         if len(digits) == 0:
             return []
-        
+
         digit_to_letter = {
             2: ["a", "b", "c"],
             3: ["d", "e", "f"],
@@ -26,24 +26,22 @@ class Solution:
 
         letters: List[List[str]] = [digit_to_letter[int(digit)] for digit in digits]
         result = [""]
-        
+
         def dfs(i):
-            if i > len(letters)-1:
+            if i > len(letters) - 1:
                 return
-            
+
             for _ in range(len(result)):
                 l = result.pop(0)
                 for l2 in letters[i]:
                     new_l = l + l2
                     result.append(new_l)
-            
-            dfs(i+1)
-        
+
+            dfs(i + 1)
+
         dfs(0)
 
         return result
 
-        
-        
-# @lc code=end
 
+# @lc code=end

@@ -6,12 +6,14 @@
 from collections import defaultdict
 from typing import List
 from xmlrpc.client import getparser
+
+
 # @lc code=start
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         if not len(prerequisites):
             return True
-        
+
         graph = defaultdict(list)
         for a, b in prerequisites:
             graph[a].append(b)
@@ -20,11 +22,11 @@ class Solution:
             # Cyclic Graph
             if i in trace:
                 return False
-            
+
             # Visited Already
             if i in visited:
                 return True
-            
+
             trace.add(i)
             for x in graph[i]:
                 if not dfs(x):
@@ -39,8 +41,8 @@ class Solution:
         for x in list(graph):
             if not dfs(x):
                 return False
-            
-        return True
-        
-# @lc code=end
 
+        return True
+
+
+# @lc code=end

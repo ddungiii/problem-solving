@@ -5,22 +5,14 @@
 #
 
 # @lc code=start
-import sys
-
+from typing import List
 
 class Solution:
-    def maxSubArray(self, nums: list[int]) -> int:
-        if len(nums) == 0:
-            return 0
+    def maxSubArray(self, nums: List[int]) -> int:
+        for i in range(1, len(nums)):
+            nums[i] = nums[i] + (nums[i - 1] if nums[i - 1] > 0 else 0)
 
-        max_sum = -sys.maxsize
-        current_sum = 0
-
-        for num in nums:
-            current_sum = max(num, current_sum + num)
-            max_sum = max(max_sum, current_sum)
-
-        return max_sum
+        return max(nums)
 
 
 # @lc code=end

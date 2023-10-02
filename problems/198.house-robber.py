@@ -4,24 +4,24 @@
 # [198] House Robber
 #
 from typing import List
-from collections import defaultdict
+from collections import OrderedDict
 
 
 # @lc code=start
 class Solution:
-    dp = defaultdict(int)
-
     def rob(self, nums: List[int]) -> int:
+        dp = OrderedDict()  
+
         if len(nums) == 1:
             return nums[0]
 
-        self.dp[0] = nums[0]
-        self.dp[1] = nums[1]
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
 
         for i in range(2, len(nums)):
-            self.dp[i] = max(self.dp[i - 2] + nums[i], self.dp[i - 1])
+            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
 
-        return max(self.dp.values())
+        return dp.popitem()[1]
 
 
 # @lc code=end

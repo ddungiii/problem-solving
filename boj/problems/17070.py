@@ -12,8 +12,13 @@ walls = []
 for _ in range(n):
     walls.append(list(map(int, input().split())))
 
+dp = [[{} for _ in range(n)] for _ in range(n)]
+
 
 def get_moves(x, y, status):
+    if dp[x][y].get(status):
+        return dp[x][y].get(status)
+
     moves = []
     if status == Status.RIGHT:
         if y + 1 < n and not walls[x][y + 1]:
@@ -35,6 +40,7 @@ def get_moves(x, y, status):
             if y + 1 < n and not walls[x][y + 1] and not walls[x + 1][y + 1]:
                 moves.append((x + 1, y + 1, Status.DIAGONAL))
 
+    dp[x][y][status] = moves
     return moves
 
 

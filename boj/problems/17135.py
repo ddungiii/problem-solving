@@ -9,34 +9,64 @@ https://www.acmicpc.net/problem/17135
 0 0 0 0 0
 1 1 1 1 1
 """
-
+import collections
 from itertools import combinations
 
-n, m, d = map(int, input().split())
-
-M = [list(map(int, input().split())) for _ in range(n)]
-defensers_comb = combinations(range(m), 3)
+dr = (0, -1, 0)
+dc = (-1, 0, 1)
 
 
-def kill(new_M, defenser):
-    for i in range(d - 1, 0, -1):
-        for j in range(defenser - i, defenser + i + 1):
-            if new_M[-1 - i][j]:
-                new_M[-1 - i][j] = 0
-                return 1
+def attack(board, archers):
+    def bfs(r: int, c: int):
+        if board[r][c]:
+            enemy_set.add((r, c))
+            return
 
-    return 0
+        deque = collections.deque([(r, c, 1)])
+
+        while deque:
+            x, y, distance = deque.popleft()
+
+            if distance > D:
+                continue
+
+            if board[x][y]:
+                enemy_set.add((x, y))
+                return
+
+            for i in range(3):
+                nx = x + dr[i]
+                ny = y + dc[i]
+                if nx < 0 or ny < 0 or nx > N - 1 or ny > M - 1:
+                    continue
+
+                deque.append((nx, ny, distance + 1))
+
+    kill = 0
+    for r in range(N - 1, -1, -1):
+        enemy_set = set()
+        for ancher in archers:
+            bfs(r, ancher)
+
+        for x, y in enemy_set:
+            board[x][y] = 0
+            kill += 1
+
+    return kill
 
 
-count = 0
-for defensers in defensers_comb:
-    new_M = M[:]
-    _count = 0
-    while new_M:
-        for defenser in defensers:
-            _count += kill(new_M, defenser)
-        new_M.pop()
+def solution():
+    archers_comb = combinations(range(M), 3)
 
-    count += _count
+    answer = 0
+    for archers in archers_comb:
+        new_board = [b[:] for b in board]
+        answer = max(answer, attack(new_board, archers))
 
-print(count)
+    return answer
+
+
+N, M, D = map(int, input().split())
+board = [list(map(int, input().split())) for _ in range(N)]
+
+print(solution())

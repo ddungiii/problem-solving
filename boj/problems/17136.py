@@ -1,73 +1,76 @@
 """
 https://www.acmicpc.net/problem/17136
 """
-from collections import deque
 
-paper_counts = [5, 5, 5, 5, 5]
-dr = (1, 0, 1)
-dc = (0, 1, 1)
-
-flag = True
+papers = [0, 5, 5, 5, 5, 5]
 
 
-def bfs(r, c):
-    global flag
-    matrix[r][c] = 0
+def get_largest_paper_size(r, c):
+    size = 0
 
-    depth = 1
-    grow = True
-    while grow:
-        points = []
-        for i in range(1, depth + 1):
-            for j in range(3):
-                nr = r + dr[j] * i
-                nc = c + dc[j] * i
-                if (
-                    not matrix[nr][c + i]
-                    or not matrix[r + i][nc]
-                    or nr > N - 1
-                    or nc > N - 1
-                ):
-                    grow = False
-                    break
-                else:
-                    points.append((nr, c + i))
-                    points.append((r + i, nc))
+    size_up = True
+    while size_up and size < 5:
+        new_size = size + 1
+        for i in range(new_size):
+            for j in range(new_size):
+                if r + i >= N or c + j >= N or matrix[r + i][c + j] == "0":
+                    size_up = False
 
-        if grow:
-            for _r, _c in points:
-                matrix[_r][_c] = 0
+        if size_up:
+            size = new_size
 
-            if paper_counts[depth]:
-                depth += 1
-            else:
-                grow = False
-        # else:
-        #     depth -= 1
+    return size
 
-    paper_counts[depth - 1] -= 1
-    if paper_counts[depth - 1] < 0:
-        flag = False
+
+def fill(r, c, size, char):
+    for i in range(size):
+        for j in range(size):
+            matrix[r + i][c + j] = char
+
+
+def dfs(index, cnt):
+    global answer
+
+    if index == len(filled):
+        answer = min(answer, cnt)
+        return
+
+    if cnt >= answer:
+        return
+
+    r, c = filled[index]
+    if matrix[r][c] == "0":
+        dfs(index + 1, cnt)
+        return
+
+    largest_size = get_largest_paper_size(r, c)
+
+    for s in range(largest_size, 0, -1):
+        if papers[s] > 0:
+            papers[s] -= 1
+            fill(r, c, s, "0")
+            dfs(index + 1, cnt + 1)
+            fill(r, c, s, "1")
+            papers[s] += 1
 
 
 def solution():
-    for r in range(N):
-        for c in range(N):
-            if not flag:
-                return -1
+    global answer
+    dfs(0, 0)
 
-            if matrix[r][c]:
-                bfs(r, c)
+    if answer == 26:
+        answer = -1
 
-    return 25 - sum(paper_counts) if flag else -1
+    return answer
 
 
-matrix = []
-line = list(map(int, input().split()))
-matrix.append(line)
-N = len(line)
+N = 10
+matrix = [input().split() for _ in range(N)]
+filled = []
+for i in range(N):
+    for j in range(N):
+        if matrix[i][j] == "1":
+            filled.append((i, j))
 
-for _ in range(N - 1):
-    matrix.append(list(map(int, input().split())))
-
+answer = 26
 print(solution())

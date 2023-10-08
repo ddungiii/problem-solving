@@ -58,17 +58,16 @@ def get_score(line_up):
 
 
 def solution():
-    # start = time.time()
+    start = time.time()
 
     answer = 0
 
     for comb in permutations(range(1, 9), 8):
-        line_up = deque(comb)
-        line_up.insert(3, 0)
+        line_up = list(comb)[0:3] + [0] + list(comb)[3:9]
 
         answer = max(answer, get_score(line_up))
 
-    # print(f"time: {time.time() - start:.4f}s")
+    print(f"time: {time.time() - start:.4f}s")
 
     return answer
 

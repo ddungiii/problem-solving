@@ -3,60 +3,38 @@ https://www.acmicpc.net/problem/17070
 """
 
 
+import collections
 from enum import Enum
 
 Status = Enum("Status", ["RIGHT", "DOWN", "DIAGONAL"])
 
 n = int(input())
-walls = []
+M = []
 for _ in range(n):
-    walls.append(list(map(int, input().split())))
+    M.append(list(map(int, input().split())))
 
-dp = [[{} for _ in range(n)] for _ in range(n)]
+"""
+0: right
+1: down
+2: diagonal
+"""
+dp = [[[0 for _ in range(n)] for _ in range(n)] for _ in range(3)]
 
+dp[0][0][1] = 1
+for i in range(2, n):
+    if not M[0][i]:
+        dp[0][0][i] = dp[0][0][i - 1]
 
-def get_moves(x, y, status):
-    if dp[x][y].get(status):
-        return dp[x][y].get(status)
-
-    moves = []
-    if status == Status.RIGHT:
-        if y + 1 < n and not walls[x][y + 1]:
-            moves.append((x, y + 1, Status.RIGHT))
-            if x + 1 < n and not walls[x + 1][y] and not walls[x + 1][y + 1]:
-                moves.append((x + 1, y + 1, Status.DIAGONAL))
-
-    elif status == Status.DOWN:
-        if x + 1 < n and not walls[x + 1][y]:
-            moves.append((x + 1, y, Status.DOWN))
-            if y + 1 < n and not walls[x][y + 1] and not walls[x + 1][y + 1]:
-                moves.append((x + 1, y + 1, Status.DIAGONAL))
-
-    else:
-        if y + 1 < n and not walls[x][y + 1]:
-            moves.append((x, y + 1, Status.RIGHT))
-        if x + 1 < n and not walls[x + 1][y]:
-            moves.append((x + 1, y, Status.DOWN))
-            if y + 1 < n and not walls[x][y + 1] and not walls[x + 1][y + 1]:
-                moves.append((x + 1, y + 1, Status.DIAGONAL))
-
-    dp[x][y][status] = moves
-    return moves
-
-
-def dfs(x, y, status):
-    if (x, y) == (n - 1, n - 1):
-        return 1
-
-    count = 0
-    moves = get_moves(x, y, status)
-    if not len(moves):
-        return count
-
-    for new_x, new_y, new_status in moves:
-        count += dfs(new_x, new_y, new_status)
-
-    return count
-
-
-print(dfs(0, 1, Status.RIGHT))
+for x in range(1, n):
+    for y in range(1, n):
+        if not M[x][y]:
+            # right
+            dp[0][x][y] = dp[0][x][y - 1] + dp[2][x][y - 1]
+            # down
+            dp[1][x][y] = dp[1][x - 1][y] + dp[2][x - 1][y]
+            # diagonal
+            if not M[x - 1][y] and not M[x][y - 1]:
+                dp[2][x][y] = (
+                    dp[0][x - 1][y - 1] + dp[1][x - 1][y - 1] + dp[2][x - 1][y - 1]
+                )
+print(sum([dp[i][n - 1][n - 1] for i in range(3)]))

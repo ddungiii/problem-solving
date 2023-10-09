@@ -26,49 +26,42 @@ def find_loops(program):
         if c == "]":
             start = stack.pop()
             loops[start] = i
+            loops[i] = start
 
     return loops
 
 
 def brain_fuck(test):
     def interprete(c):
-        nonlocal pc, loop_start, data_index, input_index
+        nonlocal pc, data_index, input_index
 
         if c == "-":
             data_array[data_index] -= 1
             data_array[data_index] %= 2**8
-            pc += 1
         elif c == "+":
             data_array[data_index] += 1
             data_array[data_index] %= 2**8
-            pc += 1
         elif c == "<":
             data_index -= 1
-            data_index %= len(data_array)
-            pc += 1
+            data_index %= size_mem
         elif c == ">":
             data_index += 1
-            data_index %= len(data_array)
-            pc += 1
+            data_index %= size_mem
         elif c == "[":
-            loop_start = pc
-            if data_array[data_index]:
-                pc = loops[loop_start] - 1
-            else:
-                pc += 1
-        elif c == "]":
             if not data_array[data_index]:
-                pc = loop_start - 1
-            else:
-                pc += 1
+                pc = loops[pc] - 1
+        elif c == "]":
+            if data_array[data_index]:
+                pc = loops[pc] - 1
         elif c == ".":
-            pc += 1
+            pass
         elif c == ",":
             data_array[data_index] = (
                 ord(input[input_index]) if input_index < size_input else 255
             )
             input_index += 1
-            pc += 1
+
+        pc += 1
 
     size_mem, size_program, size_input = test[0]
     program = test[1]
@@ -79,20 +72,22 @@ def brain_fuck(test):
     input_index = 0
     pc = 0
 
-    data_array = [0 for _ in range(size_mem // 8)]
+    data_array = [0 for _ in range(size_mem)]
     loops = find_loops(program)
 
     loop_count = 0
-    loop_start = -1
+    loop_start = size_program
     while pc < size_program:
         loop_count += 1
 
+        if loop_count > 50_000_000:
+            loop_start = min(loop_start, pc)
         interprete(program[pc])
 
-        if loop_count > 50_000_000:
+        if loop_count > 2 * 50_000_000:
             return f"Loops {loop_start} {loops[loop_start]}"
 
-    return "terminated"
+    return "Terminates"
 
 
 def solution():

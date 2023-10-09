@@ -10,82 +10,55 @@ https://www.acmicpc.net/problem/17471
 1 2
 1 2
 """
-from itertools import permutations
+import itertools, collections
 
 
-def calc_diff():
-    sum_a = sum([population[a] for a in A])
-    sum_b = sum([population[b] for b in B])
+def bfs(comb: list):
+    start = comb[0]
+    sum = 0
+    visited = set([start])
+    deque = collections.deque([start])
 
-    return abs(sum_a - sum_b)
+    while deque:
+        node = deque.popleft()
+        sum += population[node]
 
+        for v in neighbors_list[node]:
+            if v not in visited and v in comb:
+                deque.append(v)
+                visited.add(v)
 
-def dfs(a, b):
-    if a == b:
-        return float("inf")
-    # print(f"dfs {a} {b}")
-    # print(A)
-    # print(B)
-
-    if len(A) + len(B) == N:
-        # print("found")
-        # print(A)
-        # print(B)
-        # print(calc_diff())
-        return calc_diff()
-
-    neighbors_a = neighbors[a]
-    neighbors_b = neighbors[b]
-
-    diffs = []
-    for neighbor_a in neighbors_a:
-        for neighbor_b in neighbors_b:
-            if not neighbor_a in A and not neighbor_a in B:
-                A.append(neighbor_a)
-                diffs.append(dfs(neighbor_a, b))
-                A.pop()
-
-                if not neighbor_b in B and not neighbor_b in A:
-                    B.append(neighbor_b)
-                    diffs.append(dfs(a, neighbor_b))
-
-                    A.append(neighbor_a)
-                    diffs.append(dfs(neighbor_a, neighbor_b))
-                    A.pop()
-                    B.pop()
-
-    return min(diffs) if diffs else float("inf")
+    return sum, len(visited)
 
 
 def solution():
     """
-    dfs, backtracking
+    bfs
 
-    until len(A)+len(B) == N
-
-    Where is starting point A, B?
+    1. Divide combinations of nodes fist.
+    2. And check whether it is possible.
+      2-1. Using BFS, check all nodes can visited
+    3. If possible, calculate
     """
     answer = float("inf")
-    for perm in permutations(range(N), 2):
-        a, b = perm
+    for i in range(1, N // 2 + 1):
+        for combs in itertools.combinations(range(N), i):
+            remain_comb = [j for j in range(N) if j not in combs]
+            sum_1, visited_1 = bfs(list(combs))
+            sum_2, visited_2 = bfs(remain_comb)
 
-        A.append(a)
-        B.append(b)
-        diff = dfs(a, b)
-        A.pop()
-        B.pop()
-        answer = min(answer, diff)
+            if visited_1 + visited_2 == N:
+                answer = min(answer, abs(sum_1 - sum_2))
 
-    return answer
+    return answer if answer != float("inf") else -1
 
 
 N = int(input())
 population = list(map(int, input().split()))
-neighbors = []
+neighbors_list = []
 for i in range(N):
     neighbor = list(map(int, input().split()[1:]))
     neighbor = [n - 1 for n in neighbor]
-    neighbors.append(neighbor)
+    neighbors_list.append(neighbor)
 
-A, B = [], []
 print(solution())

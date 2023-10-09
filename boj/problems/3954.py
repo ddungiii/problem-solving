@@ -48,10 +48,10 @@ def interprete(c):
         data_index %= size_mem
     elif c == "[":
         if not data_array[data_index]:
-            pc = loops[pc] - 1
+            pc = loops[pc]
     elif c == "]":
         if data_array[data_index]:
-            pc = loops[pc] - 1
+            pc = loops[pc]
     elif c == ".":
         pass
     elif c == ",":
@@ -60,23 +60,23 @@ def interprete(c):
         )
         input_index += 1
 
-    pc += 1
 
+def brain_fuck():
+    global loop_start, pc
 
-def brain_fuck(test):
-    global loop_count, loop_start
-
+    loop_count = 0
     while pc < size_program:
         loop_count += 1
-
+        interprete(program[pc])
         if loop_count > 50_000_000:
             loop_start = min(loop_start, pc)
-        interprete(program[pc])
-
         if loop_count > 2 * 50_000_000:
-            return f"Loops {loop_start} {loops[loop_start]}"
+            print(f"Loops {loop_start} {loops[loop_start]}")
+            return
 
-    return "Terminates"
+        pc += 1
+
+    print("Terminates")
 
 
 N = int(input())
@@ -100,6 +100,5 @@ for test in tests:
     data_array = [0 for _ in range(size_mem)]
     loops = find_loops(program)
 
-    loop_count = 0
     loop_start = size_program
-    print(brain_fuck(test))
+    brain_fuck()

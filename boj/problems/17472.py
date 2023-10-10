@@ -9,14 +9,9 @@ https://www.acmicpc.net/problem/17472
 0 0 0 0 0 1 1 0
 0 0 0 0 0 0 0 0
 1 1 1 1 1 1 1 1
-
-1. find all islands as a list
-2. find all possible bridges for a island.
-3. find minimum distance
 """
 
 import collections
-import itertools
 
 
 N, M = map(int, input().split())
@@ -98,29 +93,31 @@ def build_bridges(id: int, island: list):
     return bridges
 
 
-def bfs_min(comb: list):
-    start = comb[0]
-    deque = collections.deque([start])
-    visited = set([start])
-    visited_island = set([start[0], start[1]])
+def find_parent(x):
+    if parent[x] != x:
+        parent[x] = find_parent(parent[x])
+    return parent[x]
 
-    while deque:
-        bridge = deque.popleft()
-        a, b, length = bridge
 
-        for _b, _length in bridges_dict[b]:
-            new_node = (b, _b, _length)
-            if new_node not in visited and new_node in comb:
-                deque.append(new_node)
-                visited.add(new_node)
-                visited_island.add(b)
-                visited_island.add(_b)
+def union_parent(a, b):
+    a = find_parent(a)
+    b = find_parent(b)
 
-    return (
-        sum([length for _, _, length in comb])
-        if len(visited_island) == len(islands)
-        else float("inf")
-    )
+    if a != b:
+        parent[a] = b
+
+
+def kruskal():
+    answer, count = 0, 0
+
+    for a, b, length in bridges:
+        if find_parent(a) != find_parent(b):
+            union_parent(a, b)
+
+            answer += length
+            count += 1
+
+    return answer, count
 
 
 """
@@ -136,15 +133,9 @@ for id, island in enumerate(islands):
         bridges_dict[a].append((b, length))
         bridges.append(_bridge)
 
-# print(islands)
-# print(bridges_dict)
-# print(bridges)
+parent = [i for i in range(len(islands) + 1)]
+bridges.sort(key=lambda x: x[2])
 
-answer = float("inf")
-# for i in range(len(islands) - 1, len(islands)):
-combs = itertools.permutations(bridges, len(islands) - 1)
-for comb in combs:
-    answer = min(answer, bfs_min(list(comb)))
-    # print(comb, answer)
+answer, count = kruskal()
 
-print(answer if answer != float("inf") else -1)
+print(answer if count == len(islands) - 1 else -1)

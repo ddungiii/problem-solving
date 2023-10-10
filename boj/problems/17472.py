@@ -28,7 +28,7 @@ dc = (1, 0, -1, 0)
 
 def bfs(r: int, c: int, visited: set):
     deque = collections.deque([(r, c)])
-    island = [(r, c)]
+    island = set([(r, c)])
 
     while deque:
         _r, _c = deque.popleft()
@@ -44,9 +44,9 @@ def bfs(r: int, c: int, visited: set):
             ):
                 visited.add((nr, nc))
                 deque.append((nr, nc))
-                island.append((nr, nc))
+                island.add((nr, nc))
 
-    return island
+    return list(island)
 
 
 def find_islands():
@@ -136,11 +136,15 @@ for id, island in enumerate(islands):
         bridges_dict[a].append((b, length))
         bridges.append(_bridge)
 
+# print(islands)
+# print(bridges_dict)
+# print(bridges)
 
 answer = float("inf")
-for i in range(1, len(bridges) + 1):
-    combs = itertools.combinations(bridges, i)
-    for comb in combs:
-        answer = min(answer, bfs_min(list(comb)))
+# for i in range(len(islands) - 1, len(islands)):
+combs = itertools.permutations(bridges, len(islands) - 1)
+for comb in combs:
+    answer = min(answer, bfs_min(list(comb)))
+    # print(comb, answer)
 
 print(answer if answer != float("inf") else -1)

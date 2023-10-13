@@ -143,9 +143,6 @@ def flip_bowls(bowl_matrix, width, height):
     """
     Flip Bowls for mixing by making matrix
     """
-    if width + height > len(bowl_matrix[0]):
-        return
-
     poped_bowls = pop_bowls(bowl_matrix, width, height)
     rotated_bowls = rotate_bowls(poped_bowls)
     rotated_bowls = rotate_bowls(rotated_bowls)
@@ -178,18 +175,14 @@ def organize_bowls():
     bowl_matrix = [collections.deque(bowls)]
     stack_bowls(bowl_matrix)
     mix_bowls(bowl_matrix)
-    # print_bowls(bowl_matrix)
     bowls = flatten_bowls(bowl_matrix)
-    # print(bowls)
 
     # Step 2
     bowl_matrix = [collections.deque(bowls)]
-    flip_bowls(bowl_matrix, N // 2, 1)
-    flip_bowls(bowl_matrix, N // 4, 2)
+    flip_bowls(bowl_matrix, int(N / 2), 1)
+    flip_bowls(bowl_matrix, int(N / 4), 2)
     mix_bowls(bowl_matrix)
-    # print_bowls(bowl_matrix)
     bowls = flatten_bowls(bowl_matrix)
-    # print(bowls)
 
 
 count = 0

@@ -116,7 +116,7 @@ def move_shark(shark):
     """
 
     def _check(perm):
-        blooded = 0
+        count = 0
         nr, nc = shark
         visited = set()
 
@@ -124,14 +124,15 @@ def move_shark(shark):
             nr = nr + dr_shark[i]
             nc = nc + dc_shark[i]
 
-            if 1 <= nr < 5 and 1 <= nc < 5 and (nr, nc) not in visited:
-                fish = fishes[(nr, nc)]
-                blooded += len(fish)
+            if 1 <= nr < 5 and 1 <= nc < 5:
+                if (nr, nc) not in visited:
+                    fish = fishes[(nr, nc)]
+                    count += len(fish)
                 visited.add((nr, nc))
             else:
                 return -1
 
-        return blooded
+        return count
 
     perms = get_repetitive_permutations(4, 3)
     count = 0
@@ -148,9 +149,10 @@ def move_shark(shark):
     for r in route:
         nr, nc = nr + dr_shark[r], nc + dc_shark[r]
 
-        poped = fishes.pop((nr, nc))
-        if len(poped) > 0:
-            blood.append((nr, nc))
+        if fishes.get((nr, nc)):
+            poped = fishes.pop((nr, nc))
+            if len(poped) > 0:
+                blood.append((nr, nc))
 
     return (nr, nc), blood
 

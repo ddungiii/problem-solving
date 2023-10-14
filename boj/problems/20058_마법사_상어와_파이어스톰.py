@@ -39,22 +39,17 @@ def rotate(r, c, L):
     9  1 -> 10 9
     10 2    2  1
     """
-    S = 2 ** (L - 1)
 
-    # 제 4 사분면
-    temp = []
-    for i in range(S):
-        temp.append(matrix[r + i][c : c + S])
+    S = 2**L
 
-    # 제 1, 2, 3 사분면 -> 제 2, 3 ,4 사분면
+    temp = [collections.deque() for _ in range(S)]
     for i in range(S):
-        matrix[r + i][c : c + S] = matrix[r + S + i][c : c + S]
-        matrix[r + S + i][c : c + S] = matrix[r + S + i][c + S : c + S + S]
-        matrix[r + S + i][c + S : c + S + S] = matrix[r + i][c + S : c + S + S]
+        temp_row = matrix[r + i][c : c + S]
+        for j, t in enumerate(temp_row):
+            temp[j].appendleft(t)
 
-    # 제 4 사분면 -> 제 2 사분면
     for i in range(S):
-        matrix[r + i][c + S : c + S + S] = temp[i]
+        matrix[r + i][c : c + S] = temp[i]
 
 
 def melt():
@@ -151,15 +146,8 @@ L_list = list(map(int, input().split()))
 
 
 for i in range(Q):
-    print(f"i: {i}, L: {L_list[i]}")
-    if L_list[i] == 0:
-        continue
     divide(L_list[i])
-    print_matrix(matrix)
-    print(melt())
-
-    print_matrix(matrix)
-    print()
+    melt()
 
 ices = find_ices()
 largest = find_largest()

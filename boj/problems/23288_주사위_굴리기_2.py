@@ -13,88 +13,54 @@ import collections
 
 
 class Dice:
-    maps = [[6, 3, 1, 4], [6, 2, 1, 5], [3, 2, 4, 5]]
+    maps = [[-1, 2, -1], [4, 1, 3], [-1, 5, -1], [-1, 6, -1]]
 
     def __init__(self):
         self.r, self.c = (0, 0)
+        self.direction = 0
 
-        # 가로, 세로 방향의 list 종류
-        self.hori = 0
-        self.vert = 1
-
-        # 주사위의 다음 방향 0, 1, 2, 3 (동, 남, 서, 북)
-        self.dirc = 1
-
-        # 가로, 세로 방향의 index in the list
-        self.hori_index = 0
-        self.vert_index = 0
-
-        # 가로, 세로 방향의 방향
-        self.hori_dirc = 1
-        self.vert_dirc = 1
-
-    def __str__(self) -> str:
-        return f"r, c: ({self.r}, {self.c}), direction: {self.dirc}, value: {self.maps[self.hori][self.hori_index]}, {self.maps[self.vert][self.vert_index]}"
+    def __str__(self):
+        return f"({self.r}, {self.c}): {self.maps[3][1]}, direction: {self.direction}"
 
     def can_move(self) -> bool:
-        direction = dr[self.dirc], dc[self.dirc]
-        r, c = self.r + direction[0], self.c + direction[1]
+        r, c = self.r + dr[self.direction], self.c + dc[self.direction]
 
         return 0 <= r < N and 0 <= c < M
 
     def get_value(self):
-        return self.maps[self.vert][self.vert_index]
+        return self.maps[3][1]
 
     def move(self):
-        """
-        dirc: 0, 1, 2, 3 (동, 남, 서, 북)
-        """
-        direction = dr[self.dirc], dc[self.dirc]
-        self.r, self.c = self.r + direction[0], self.c + direction[1]
+        self.r, self.c = self.r + dr[self.direction], self.c + dc[self.direction]
 
-        if direction[1] != 0:
-            """
-            Move horizontal
-            """
-            dirc = direction[1]  # 오른쪽 / 왼쪽
-
-            self.hori_index = (self.hori_index + dirc * self.hori_dirc) % 4
-            value = self.maps[self.hori][self.hori_index]
-
-            flip_dirc = False
-            self.vert = (self.vert + dirc) % 3
-            if self.vert == self.hori:
-                self.vert = (self.vert + dirc) % 3
-                flip_dirc = True
-
-            self.vert_index = self.maps[self.vert].index(value)
-            if flip_dirc:
-                self.vert_dirc *= -1
-
-        elif direction[0] != 0:
-            """
-            Move vertical
-            """
-            dirc = direction[0]  # 오른쪽 / 왼쪽
-
-            self.vert_index = (self.vert_index + dirc * self.vert_dirc) % 4
-            value = self.maps[self.vert][self.vert_index]
-
-            flip_dirc = False
-            self.hori = (self.hori + dirc) % 3
-            if self.hori == self.vert:
-                self.hori = (self.hori + dirc) % 3
-                flip_dirc = True
-
-            self.hori_index = self.maps[self.hori].index(value)
-            if flip_dirc:
-                self.hori_dirc *= -1
+        if self.direction == 0:
+            temp = self.maps[1][2]
+            self.maps[1] = [self.maps[3][1]] + self.maps[1][:2]
+            self.maps[3][1] = temp
+        elif self.direction == 1:
+            self.maps[0][1], self.maps[1][1], self.maps[2][1], self.maps[3][1] = (
+                self.maps[3][1],
+                self.maps[0][1],
+                self.maps[1][1],
+                self.maps[2][1],
+            )
+        elif self.direction == 2:
+            temp = self.maps[1][0]
+            self.maps[1] = self.maps[1][1:] + [self.maps[3][1]]
+            self.maps[3][1] = temp
+        elif self.direction == 3:
+            self.maps[0][1], self.maps[1][1], self.maps[2][1], self.maps[3][1] = (
+                self.maps[1][1],
+                self.maps[2][1],
+                self.maps[3][1],
+                self.maps[0][1],
+            )
 
     def turn_right(self):
-        self.dirc = (self.dirc + 1) % 4
+        self.direction = (self.direction + 1) % 4
 
     def turn_left(self):
-        self.dirc = (self.dirc - 1) % 4
+        self.direction = (self.direction - 1) % 4
 
 
 def move(dice: Dice):
@@ -160,35 +126,14 @@ dc = (1, 0, -1, 0)
 N, M, K = map(int, input().split())
 matrix = [list(map(int, input().split())) for _ in range(N)]
 
-# dice = Dice()
-# answer = 0
-# for _ in range(K):
-#     move(dice)
-#     point = get_point(dice.r, dice.c)
-#     set_direction(dice)
-#     print(_, dice, "m_value:", matrix[dice.r][dice.c], ", point: ", point)
-
-#     answer += point
-
-# print(answer)
-
 dice = Dice()
-print(dice)
-for _ in range(3):
-    dice.move()
-    print(dice)
-dice.turn_left()
-print("turnleft")
-# for _ in range(3):
-#     dice.move()
-#     print(dice)
-# print("turnright")
-# dice.turn_right()
-for _ in range(4):
-    dice.move()
-    print(dice)
-print("turnleft")
-dice.turn_left()
-for _ in range(4):
-    dice.move()
-    print(dice)
+answer = 0
+for _ in range(K):
+    move(dice)
+    point = get_point(dice.r, dice.c)
+    set_direction(dice)
+    # print(_, dice, "m_value:", matrix[dice.r][dice.c], ", point: ", point)
+
+    answer += point
+
+print(answer)

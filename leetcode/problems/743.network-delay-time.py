@@ -8,36 +8,36 @@
 # @lc code=start
 import ast
 import collections
+import heapq
 from typing import List
 
 
 class Solution:
+    def dijkstra(self, graph, start):
+        dist = collections.defaultdict(int)
+        Q = [(start, 0)]
+
+        while Q:
+            node, weight = heapq.heappop(Q)
+            if node not in dist:
+                dist[node] = weight
+                for v, w in graph[node]:
+                    alt = w + weight
+                    heapq.heappush(Q, (v, alt))
+
+        return dist
+
     def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
-        # Preprocessing nodes
         graph = collections.defaultdict(list)
         for u, v, w in times:
             graph[u].append((v, w))
 
-        # BFS
-        visited = set({k})
-        queue = collections.deque([(k, 0)])
-        taken_time = 0
+        dist = self.dijkstra(graph, k)
+        print(dist)
+        if len(dist) == n:
+            return max(dist.values())
 
-        while queue:
-            node, weight = queue.popleft()
-            neighbors = graph[node]
-            for v, w in neighbors:
-                if v not in visited:
-                    visited.add(v)
-
-                    new_w = weight + w
-                    queue.append((v, new_w))
-                    taken_time = max(taken_time, new_w)
-
-        if len(visited) != n:
-            return -1
-
-        return taken_time
+        return -1
 
 
 # @lc code=end

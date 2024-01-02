@@ -15,15 +15,15 @@ from typing import List
 class Solution:
     def dijkstra(self, graph, start):
         dist = collections.defaultdict(int)
-        Q = [(start, 0)]
+        Q = [(0, start)]
 
         while Q:
-            node, weight = heapq.heappop(Q)
+            weight, node = heapq.heappop(Q)
             if node not in dist:
                 dist[node] = weight
                 for v, w in graph[node]:
                     alt = w + weight
-                    heapq.heappush(Q, (v, alt))
+                    heapq.heappush(Q, (alt, v))
 
         return dist
 
@@ -33,7 +33,6 @@ class Solution:
             graph[u].append((v, w))
 
         dist = self.dijkstra(graph, k)
-        print(dist)
         if len(dist) == n:
             return max(dist.values())
 

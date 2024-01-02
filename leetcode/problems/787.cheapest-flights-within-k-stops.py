@@ -17,22 +17,19 @@ class Solution:
         for u, v, w in flights:
             graph[u].append((v, w))
 
-        dist = collections.defaultdict(int)
-        Q = [(0, src)]
-        depth = 0
+        Q = [(0, src, 0)]  # weight, node, depth
 
         while Q:
-            weight, node = heapq.heappop(Q)
-            if node not in dist:
-                dist[node] = weight
-                if depth <= k:
-                    for v, w in graph[node]:
-                        alt = w + weight
-                        heapq.heappush(Q, (alt, v))
+            weight, node, depth = heapq.heappop(Q)
+            if node == dst:
+                return weight
 
-            depth += 1
+            if depth <= k:
+                for v, w in graph[node]:
+                    alt = w + weight
+                    heapq.heappush(Q, (alt, v, depth + 1))
 
-        return dist[dst] if dist[dst] else -1
+        return -1
 
 
 # @lc code=end

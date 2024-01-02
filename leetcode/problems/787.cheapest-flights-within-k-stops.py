@@ -5,6 +5,7 @@
 #
 import collections
 import heapq
+import math
 from typing import List
 
 
@@ -18,6 +19,7 @@ class Solution:
             graph[u].append((v, w))
 
         Q = [(0, src, 0)]  # weight, node, depth
+        dist = [[math.inf] * (k + 1) for _ in range(n)]
 
         while Q:
             weight, node, depth = heapq.heappop(Q)
@@ -26,8 +28,10 @@ class Solution:
 
             if depth <= k:
                 for v, w in graph[node]:
-                    alt = w + weight
-                    heapq.heappush(Q, (alt, v, depth + 1))
+                    new_weight = w + weight
+                    if new_weight < dist[v][depth]:
+                        dist[v][depth] = new_weight
+                        heapq.heappush(Q, (w + weight, v, depth + 1))
 
         return -1
 

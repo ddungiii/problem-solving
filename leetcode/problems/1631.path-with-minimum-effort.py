@@ -9,36 +9,42 @@
 import collections
 import heapq
 import math
-from typing import List
+
 
 class Solution:
-    def minimumEffortPath(self, heights: List[List[int]]) -> int:
-        dr = (1, 0, -1, 0)
-        dc = (0, 1, 0, -1)
-        dst = (len(heights)-1, len(heights)-1)
+    def minimumEffortPath(self, heights: list[list[int]]) -> int:
+        directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+        W, H = len(heights), len(heights[0])
 
-        Q = [(0, (0,0))]
-        min_effort = math.inf
-        visited = set((0, 0))
+        efforts = {(r, c): math.inf for c in range(H) for r in range(W)}
+        efforts[(0, 0)] = 0
+
+        Q = collections.deque([(0, 0)])
+
+        def inside(r, c):
+            return 0 <= r < W and 0 <= c < H
 
         while Q:
-            effort, (x, y)= heapq.heappop(Q)
-            if (x, y) == dst:
-                return effort
+            r, c = Q.popleft()
+            curr_height = heights[r][c]
+            curr_effort = efforts[(r, c)]
 
-            min_effort = min(min_effort, effort)
-            
-            for r in dr:
-                for c in dc:
-                    new_r, new_c = x+r, y+c
-                    if (new_r, new_c) not in visited:
-                        if (new_r >= 0 and new_r < len(heights)) and (new_c >= 0 and new_c < len(heights)):
-                            new_effort = abs(heights[new_r][new_c] - heights[x][y])
-                            heapq.heappush(Q, (new_effort, (new_r, new_c)))
-                            visited.add((new_r, new_c))
+            for dr, dc in directions:
+                new_r, new_c = r + dr, c + dc
+                if inside(new_r, new_c):
+                    new_height = heights[new_r][new_c]
+                    new_effort = max(curr_effort, abs(new_height - curr_height))
+                    if new_effort < efforts[(new_r, new_c)]:
+                        efforts[(new_r, new_c)] = new_effort
+                        Q.append((new_r, new_c))
+
+        return efforts[(W - 1, H - 1)]
+
+
 # @lc code=end
 import time
 import ast
+
 soluion = Solution()
 start = time.time()
 
@@ -46,5 +52,4 @@ heights = ast.literal_eval(input("height: "))
 heights = [[int(e) for e in l] for l in heights]
 
 print(soluion.minimumEffortPath(heights))
-print(f'time: {time.time() - start:.4f}s ')
-
+print(f"time: {time.time() - start:.4f}s ")

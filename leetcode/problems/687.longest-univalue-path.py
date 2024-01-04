@@ -18,48 +18,31 @@ import collections
 
 
 class Solution:
+    result = 0
+
     def longestUnivaluePath(self, root: TreeNode | None) -> int:
         if not root:
             return 0
 
-        # Initialize
-        stack = collections.deque([root])
-        longest_length = 0
-
-        path = [root]
-        length = -1
-
-        # Define sub-functions
-        def is_child(parent, node):
-            return parent.left == node or parent.right == node
-
-        def is_on_the_path(node):
-            for parent in path:
-                if parent.val == node.val and is_child(parent, node):
-                    return True
-
-            return False
-
-        # DFS
-        while stack:
-            node = stack.pop()
+        def dfs(node):
             if not node:
-                continue
+                return 0
 
-            if is_on_the_path(node):
-                length += 1
-                path.append(node)
+            left, right = dfs(node.left), dfs(node.right)
+            if node.left and node.left.val == node.val:
+                left += 1
             else:
-                length = 0
-                path = [node]
+                left = 0
+            if node.right and node.right.val == node.val:
+                right += 1
+            else:
+                right = 0
 
-            longest_length = max(longest_length, length)
+            self.result = max(self.result, left + right)
+            return max(left, right)
 
-            left, right = node.left, node.right
-            stack.append(left)
-            stack.append(right)
-
-        return longest_length
+        dfs(root)
+        return self.result
 
 
 # @lc code=end

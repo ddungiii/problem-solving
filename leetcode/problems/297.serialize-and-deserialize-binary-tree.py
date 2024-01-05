@@ -20,18 +20,6 @@ from math import log
 
 
 class Codec:
-    def get_depth(self, root):
-        def dfs(node, depth):
-            if not node:
-                return depth
-
-            left = dfs(node.left, depth + 1)
-            right = dfs(node.right, depth + 1)
-
-            return max(left, right)
-
-        return dfs(root, 0)
-
     def serialize(self, root):
         """Encodes a tree to a single string.
 
@@ -39,23 +27,20 @@ class Codec:
         :rtype: str
         """
         result = []
-        depth = self.get_depth(root)
+        queue = collections.deque([root])
 
-        def dfs(node, curr_depth):
-            if curr_depth == depth:
-                return
+        while queue:
+            node = queue.popleft()
+            if not node:
+                result.append("#")
+                continue
 
-            val = node.val if node else None
-            left = node.left if node else None
-            right = node.right if node else None
+            result.append(f"{node.val}")
 
-            result.append(f"{val}")
-            dfs(left, curr_depth + 1)
-            dfs(right, curr_depth + 1)
+            queue.append(node.left)
+            queue.append(node.right)
 
-        dfs(root, 0)
-        result = " ".join(result)
-        return result
+        return " ".join(result)
 
     def deserialize(self, data):
         """Decodes your encoded data to tree.
@@ -63,29 +48,26 @@ class Codec:
         :type data: str
         :rtype: TreeNode
         """
-        if not data:
+        if not data or data[0] == "#":
             return
+        data = data.split()
+        data = data
+        root = TreeNode(int(data[0]))
 
-        data = data.split(" ")
-        data = collections.deque([ast.literal_eval(e) for e in data])
-        depth = int(log(len(data) + 1, 2))
+        queue = collections.deque([root])
+        index = 1
 
-        def dfs(node, curr_depth):
-            if curr_depth == depth:
-                return
+        while queue:
+            node = queue.popleft()
+            if data[index] != "#":
+                node.left = TreeNode(int(data[index]))
+                queue.append(node.left)
+            index += 1
 
-            left = TreeNode(data.popleft())
-            dfs(left, curr_depth + 1)
-            right = TreeNode(data.popleft())
-            dfs(right, curr_depth + 1)
-
-            if left.val is not None:
-                node.left = left
-            if right.val is not None:
-                node.right = right
-
-        root = TreeNode(data.popleft())
-        dfs(root, 1)
+            if data[index] != "#":
+                node.right = TreeNode(int(data[index]))
+                queue.append(node.right)
+            index += 1
 
         return root
 

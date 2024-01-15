@@ -9,13 +9,13 @@ def solution(nums):
 
         return True
 
-    length = len(nums)
-    count = 0
+    import itertools
 
-    for i in range(length):
-        for j in range(i + 1, length):
-            for k in range(j + 1, length):
-                if is_prime(nums[i] + nums[j] + nums[k]):
-                    count += 1
+    count = 0
+    comb = itertools.combinations(nums, 3)
+
+    for i, j, k in comb:
+        if is_prime(i + j + k):
+            count += 1
 
     return count

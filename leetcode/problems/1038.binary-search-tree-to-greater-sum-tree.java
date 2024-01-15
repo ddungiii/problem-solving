@@ -28,23 +28,18 @@ class TreeNode {
 }
 
 class Solution {
+    int val = 0;
+
     public TreeNode bstToGst(TreeNode root) {
-        this.dfs(root, 0);
+        if (root != null) {
+            this.bstToGst(root.right);
+            this.val += root.val;
+            root.val = this.val;
+            this.bstToGst(root.left);
 
-        return root;
-    }
-
-    int dfs(TreeNode node, int acc) {
-        if (node == null) {
-            return acc;
         }
 
-        acc = this.dfs(node.right, acc);
-        acc += node.val;
-        node.val = acc;
-        acc = this.dfs(node.left, acc);
-
-        return acc;
+        return root;
     }
 }
 // @lc code=end

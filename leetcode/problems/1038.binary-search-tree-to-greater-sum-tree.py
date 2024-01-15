@@ -15,22 +15,15 @@ class TreeNode:
 
 
 class Solution:
+    val = 0
+
     def bstToGst(self, root: TreeNode) -> TreeNode:
-        def dfs(node, acc):
-            """
-            큰 숫자 방향으로 DFS
-            """
-            if not node:
-                return acc
+        if root:
+            self.bstToGst(root.right)
+            self.val += root.val
+            root.val = self.val
+            self.bstToGst(root.left)
 
-            acc = dfs(node.right, acc)
-            acc += node.val
-            node.val = acc
-            acc = dfs(node.left, acc)
-
-            return acc
-
-        dfs(root, 0)
         return root
 
 

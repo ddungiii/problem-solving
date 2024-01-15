@@ -26,16 +26,19 @@ k	d	result
 from math import sqrt
 
 
-def calc_distance_from_origin(x, y):
-    return sqrt(x**2 + y**2)
-
-
 def solution(k, d):
     answer = 0
 
     for x in range(0, d + 1, k):
-        for y in range(0, d + 1, k):
-            if calc_distance_from_origin(x, y) <= d:
-                answer += 1
+        remain = int(sqrt(d**2 - x**2))
+        answer += int(remain / k) + 1
 
     return answer
+
+
+import time
+
+k, d = int(input("k: ")), int(input("d: "))
+start = time.time()
+print(solution(k, d))
+print(f"time: {time.time() - start:.4f}s ")

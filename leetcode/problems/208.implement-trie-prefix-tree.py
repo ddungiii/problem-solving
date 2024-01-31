@@ -6,14 +6,13 @@
 
 
 # @lc code=start
-class Node:
-    def __init__(self, val=None, end=False):
-        self.val = val
-        self.end = end
-        self.children = []
+import collections
 
-    def __str__(self):
-        return f"{self.val}, {self.children}"
+
+class Node:
+    def __init__(self, end=False):
+        self.end = end
+        self.children = collections.defaultdict(Node)
 
 
 class Trie:
@@ -23,50 +22,24 @@ class Trie:
     def insert(self, word: str) -> None:
         node = self.root
         for c in word:
-            success = False
-            for child in node.children:
-                if c == child.val:
-                    node = child
-                    success = True
-                    break
-
-            if success:
-                continue
-
-            # Fail to find node
-            new_node = Node(c)
-            node.children.append(new_node)
-            node = new_node
-
+            node = node.children[c]
         node.end = True
 
     def search(self, word: str) -> bool:
         node = self.root
         for c in word:
-            success = False
-            for child in node.children:
-                if c == child.val:
-                    node = child
-                    success = True
-                    break
-
-            if not success:
+            if c not in node.children:
                 return False
+            node = node.children[c]
 
         return node.end
 
     def startsWith(self, prefix: str) -> bool:
         node = self.root
         for c in prefix:
-            success = False
-            for child in node.children:
-                if c == child.val:
-                    node = child
-                    success = True
-                    break
-
-            if not success:
+            if c not in node.children:
                 return False
+            node = node.children[c]
 
         return True
 

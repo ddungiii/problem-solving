@@ -2,42 +2,32 @@ package programmers.level2.java;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 class Solution {
-    ArrayList<Character> seperators = new ArrayList<>(Arrays.asList('{', '}', ','));
-
     public int[] solution(String s) {
         ArrayList<Integer> answer = new ArrayList<Integer>();
 
-        for (int i = 0; i < s.length(); i++) {
-            if (this.seperators.contains(s.charAt(i))) {
-                continue;
-            }
+        String trimmed = s.substring(2, s.length() - 2);
+        String[] splited = trimmed.split("\\},\\{");
 
-            int[] result = this.extractNumber(s, i);
-            if (!answer.contains(result[0])) {
-                answer.add(result[0]);
-            }
-            i = result[1];
+        ArrayList<int[]> sets = new ArrayList<>();
+        for (String setString : splited) {
+            String[] elements = setString.split(",");
+            int[] intArray = Arrays.stream(elements).mapToInt(Integer::parseInt).toArray();
+            sets.add(intArray);
         }
 
-        return answer.stream().mapToInt(i -> i).toArray();
-    }
+        sets.sort(Comparator.comparingInt(arr -> arr.length));
 
-    private int[] extractNumber(String s, int start) {
-        int end = start;
-        for (int i = start + 1; i < s.length(); i++) {
-            if (this.seperators.contains(s.charAt(i))) {
-                break;
+        for (int[] set : sets) {
+            for (int num : set) {
+                if (!answer.contains(num)) {
+                    answer.add(num);
+                }
             }
-
-            end = i;
         }
 
-        String numberString = s.substring(start, end + 1);
-        int number = Integer.parseInt(numberString);
-
-        int[] result = { number, end };
-        return result;
+        return answer.stream().mapToInt(x -> x).toArray();
     }
 }

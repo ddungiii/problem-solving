@@ -1,19 +1,8 @@
 import collections
+import heapq
 import math
 
-dp_and = collections.defaultdict(lambda: -1)  ## 합승 요금
-dp_a = collections.defaultdict(lambda: -1)  ## a 요금
-dp_b = collections.defaultdict(lambda: -1)  ## b 요금
-
-
-def make_fares_dict(fares):
-    dict = {}
-
-    for c, d, f in fares:
-        dict[(c, d)] = f
-        dict[(d, c)] = f
-
-    return dict
+dp = {}
 
 
 def make_graph(fares):
@@ -25,30 +14,30 @@ def make_graph(fares):
     return graph
 
 
-def find_min_path(start, dest):
-    pass
+def djikstra(graph, start):
+    Q = [(0, start)]
+    dist = collections.defaultdict(lambda: math.inf)
 
+    while Q:
+        weight, node = heapq.heappop(Q)
+        if node not in dist:
+            dist[node] = weight
+            for v, w in graph[node]:
+                heapq.heappush(Q, (weight + w, v))
 
-def find_min_fare(fares_dict, graph, start, a, b, dest):
-    min_fare = dp_and[dest] + dp_a[dest] + dp_b[dest]
-
-    for neighbor in graph[start]:
-        if dp_and[neighbor] < 0:
-            dp_and[neighbor] = dp_and[dest] + fares_dict[(dest, neighbor)]
-
-        min_fare = min(
-            min_fare, find_min_fare(fares_dict, graph, start, a, b, neighbor)
-        )
-
-    return min_fare
+    return dist
 
 
 def solution(n, s, a, b, fares):
-    fares_dict = make_fares_dict(fares)
     graph = make_graph(fares)
-    dp_and[s] = 0
 
-    min_fare = find_min_fare(fares_dict, graph, s, a, b, s)
+    for i in range(1, n + 1):
+        dp[i] = djikstra(graph, i)
+
+    min_fare = math.inf
+    for i in range(1, n + 1):
+        fare = dp[s][i] + dp[i][a] + dp[i][b]
+        min_fare = min(min_fare, fare)
 
     return min_fare
 
@@ -72,3 +61,5 @@ print(
         ],
     )
 )
+
+print(solution(7, 3, 4, 1, [[5, 7, 9], [4, 6, 4], [3, 6, 1], [3, 2, 3], [2, 1, 6]]))

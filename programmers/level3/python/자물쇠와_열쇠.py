@@ -1,6 +1,5 @@
 import collections
 import copy
-from re import M
 
 DEBUG = True
 
@@ -16,21 +15,27 @@ def print_mat(mat):
     print()
 
 
-def expand(key, lock):
+def expand_key(key):
+    empty_line = collections.deque([-1 for _ in range(2 * N - 2 + M)])
+
+    new_key = collections.deque()
+    for r in key:
+        new_key.append(collections.deque(list(r) + [-1 for _ in range(M - 2 + N)]))
+    for _ in range(M - 2 + N):
+        new_key.append(empty_line)
+
+    print_mat(new_key)
+
+    return new_key
+
+
+def expand_lock(lock):
     """
     {key}가 move할 수 있는 거리만큼, {key}와 {lock} matrix들을 확장시킵니다.
 
     key는 (0,0)에, lock은 중심에 위치시킵니다.
     """
     empty_line = collections.deque([-1 for _ in range(2 * N - 2 + M)])
-
-    new_key = collections.deque()
-    for r in key:
-        new_key.append(collections.deque(r + [-1 for _ in range(M - 2 + N)]))
-    for _ in range(M - 2 + N):
-        new_key.append(empty_line)
-
-    print_mat(new_key)
 
     new_lock = collections.deque()
     for _ in range(N - 1):
@@ -45,7 +50,7 @@ def expand(key, lock):
 
     print_mat(new_lock)
 
-    return new_key, new_lock
+    return new_lock
 
 
 def rotate(mat):
@@ -109,16 +114,17 @@ def solution(key, lock):
     N = len(key)
     M = len(lock)
 
-    key, lock = expand(key, lock)
+    lock = expand_lock(lock)
 
     for _ in range(4):
         if _ > 0:
             key = rotate(key)
+        expanded_key = expand_key(key)
 
         for x in range(M - 1 + N):
             for y in range(M - 1 + N):
                 print(x, y)
-                new_key = move(key, x, y)
+                new_key = move(expanded_key, x, y)
                 print_mat(new_key)
                 key_keys = get_key(new_key, 1)
                 lock_keys = get_key(lock, 0)

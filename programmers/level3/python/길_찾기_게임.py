@@ -1,3 +1,8 @@
+import sys
+
+sys.setrecursionlimit(10**6)
+
+
 class TreeNode:
     def __init__(self, index, x, y, left=None, right=None):
         self.index = index
@@ -15,39 +20,34 @@ class TreeNode:
 
 def get_tree(nodeinfo: list):
     nodes = [TreeNode(i + 1, x, y) for i, (x, y) in enumerate(nodeinfo)]
-    nodes.sort(key=lambda node: (node.y, -node.x))
+    nodes.sort(key=lambda node: (-node.y, node.x))  # Fix sorting order
 
-    head = nodes.pop()
-    parents = [head]
+    root = nodes[0]
+    for node in nodes[1:]:
+        current = root
+        while True:
+            if node.x < current.x:
+                if not current.left:
+                    current.left = node
+                    break
+                else:
+                    current = current.left
+                    continue
 
-    def find_parent(parents, child):
-        for parent in parents:
-            if not parent.left and not parent.right and child.x < parent.x:
-                parent.left = child
-                return
+            elif node.x > current.x:
+                if not current.right:
+                    current.right = node
+                    break
+                else:
+                    current = current.right
+                    continue
 
-            elif not parent.right and child.x > parent.x:
-                parent.right = child
-                return
-
-    while nodes:
-        children = [nodes.pop()]
-        while nodes and nodes[-1].y == children[0].y:
-            children.append(nodes.pop())
-
-        for child in children:
-            find_parent(parents, child)
-
-        parents = children
-
-    return head
+    return root
 
 
 def preorder(head, result=[]):
     if not head:
         return
-
-    print(head.index, head.left, head.right)
 
     result.append(head.index)
     preorder(head.left, result)
@@ -60,8 +60,8 @@ def postorder(head, result=[]):
     if not head:
         return
 
-    preorder(head.left, result)
-    preorder(head.right, result)
+    postorder(head.left, result)
+    postorder(head.right, result)
     result.append(head.index)
 
     return result
@@ -69,7 +69,6 @@ def postorder(head, result=[]):
 
 def solution(nodeinfo):
     tree = get_tree(nodeinfo)
-    print(tree)
 
     return [preorder(tree), postorder(tree)]
 
@@ -77,3 +76,19 @@ def solution(nodeinfo):
 print(
     solution([[5, 3], [11, 5], [13, 3], [3, 5], [6, 1], [1, 3], [8, 6], [7, 2], [2, 2]])
 )
+# root = nodes[0]
+#     for node in nodes[1:]:
+#         current = root
+#         while True:
+#             if node.x < current.x:
+#                 if current.left is None:
+#                     current.left = node
+#                     break
+#                 else:
+#                     current = current.left
+#             else:
+#                 if current.right is None:
+#                     current.right = node
+#                     break
+#                 else:
+#                     current = current.right

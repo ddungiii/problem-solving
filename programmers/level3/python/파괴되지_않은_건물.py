@@ -8,6 +8,32 @@ def print_list(board):
     print()
 
 
+def get_prefix_sum(skill, w, h):
+    prefix_sum = [[0 for _ in range(h + 1)] for _ in range(w + 1)]
+
+    for type, r1, c1, r2, c2, degree in skill:
+        degree = degree if type == ME else -degree
+        prefix_sum[r1][c1] += degree
+        prefix_sum[r2 + 1][c1] += -degree
+        prefix_sum[r1][c2 + 1] += -degree
+        prefix_sum[r2 + 1][c2 + 1] += degree
+
+    # Sum prefix
+    for r in range(w + 1):
+        prefix = 0
+        for c in range(h + 1):
+            prefix_sum[r][c] += prefix
+            prefix = prefix_sum[r][c]
+
+    for c in range(h + 1):
+        prefix = 0
+        for r in range(w + 1):
+            prefix_sum[r][c] += prefix
+            prefix = prefix_sum[r][c]
+
+    return prefix_sum
+
+
 def count_alive(board):
     cnt = 0
     for row in board:
@@ -16,13 +42,10 @@ def count_alive(board):
 
 
 def solution(board, skill):
-    print_list(board)
-    for type, r1, c1, r2, c2, degree in skill:
-        degree = degree if type == ME else -degree
-        for r in range(r1, r2 + 1):
-            for c in range(c1, c2 + 1):
-                board[r][c] += degree
-    print_list(board)
+    prefix_sum = get_prefix_sum(skill, len(board), len(board[0]))
+    # Combine prefix_sum
+    for r in range(len(board)):
+        board[r] = [x + y for x, y in zip(board[r], prefix_sum[r][:-1])]
 
     return count_alive(board)
 

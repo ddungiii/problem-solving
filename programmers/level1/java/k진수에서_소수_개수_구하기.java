@@ -7,7 +7,6 @@ class Solution {
 
         // 2. split numbers by 0
         String[] list = str.split("0");
-        // System.out.println(list);
 
         // 3. check each number is Prime.
         int answer = 0;
@@ -15,7 +14,7 @@ class Solution {
             if (numStr.length() == 0) {
                 continue;
             }
-            int num = Integer.parseInt(numStr);
+            long num = Long.parseLong(numStr);
             if (this.isPrime(num)) {
                 answer++;
             }
@@ -36,12 +35,12 @@ class Solution {
     // return str.toString();
     // }
 
-    private boolean isPrime(int n) {
+    private boolean isPrime(long n) {
         if (n == 1) {
             return false;
         }
 
-        for (int i = 2; i < n / 2 + 1; i++) {
+        for (int i = 2; i <= Math.sqrt(n); i++) {
             if (n % i == 0) {
                 return false;
             }

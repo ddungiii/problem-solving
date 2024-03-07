@@ -8,7 +8,7 @@ class Parking {
     String carNum;
     String in;
     String out;
-    int fee;
+    int accTime;
 
     public Parking(String carNum) {
         this.carNum = carNum;
@@ -61,7 +61,7 @@ class Solution {
             if (map.containsKey(carNum)) {
                 Parking parking = map.get(carNum);
                 if (parking.done()) {
-                    parking.fee += this.calculateFee(fees, parking.in, parking.out);
+                    parking.accTime += getParkingTime(parking.in, parking.out);
                     parking.free();
                 }
 
@@ -83,26 +83,20 @@ class Solution {
             String inStr = parking.getIn();
             String outStr = parking.getOut();
 
-            result[i] += parking.fee;
-            result[i] += this.calculateFee(fees, inStr, outStr);
+            int accTime = parking.accTime;
+            int parkingTime = getParkingTime(inStr, outStr);
+            result[i] += this.calculateFee(fees, accTime + parkingTime);
 
         }
 
         return result;
     }
 
-    private int calculateFee(int[] fees, String inStr, String outStr) {
-        int in = this.timeToMinute(inStr);
-        int out = this.timeToMinute(outStr);
-        int parkingTime = this.getParkingTime(in, out);
-
+    private int calculateFee(int[] fees, int parkingTime) {
         int baseTime = fees[0];
         int baseFee = fees[1];
         int addTime = fees[2];
         int addFee = fees[3];
-
-        System.out.println(inStr + " " + outStr);
-        System.out.println(baseFee + " " + parkingTime + " " + baseTime + " " + addTime);
 
         int additionalFee = 0;
         if (parkingTime > baseTime) {
@@ -122,7 +116,10 @@ class Solution {
         return hour * 60 + minute;
     }
 
-    private int getParkingTime(int in, int out) {
+    private int getParkingTime(String inStr, String outStr) {
+        int in = this.timeToMinute(inStr);
+        int out = this.timeToMinute(outStr);
+
         return out - in;
     }
 

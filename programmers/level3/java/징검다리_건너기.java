@@ -4,13 +4,38 @@ import java.util.Arrays;
 
 class Solution {
     public int solution(int[] stones, int k) {
-        int smallest = Arrays.stream(stones).max().getAsInt();
+        // 1. Find number of people using binary search (parametic search)
+        int max = Arrays.stream(stones).max().getAsInt();
+        int min = Arrays.stream(stones).min().getAsInt();
 
-        for (int i = 0; i < stones.length - k + 1; i++) {
-            int max = Arrays.stream(stones, i, i + k).max().getAsInt();
-            smallest = Math.min(smallest, max);
+        // 2. Check the number is OK. (can cross the stones)
+        while (min < max) {
+            int mid = (max + min + 1) / 2;
+
+            if (canCross(stones, k, mid)) {
+                min = mid;
+            } else {
+                max = mid - 1;
+            }
         }
 
-        return smallest;
+        return max;
+    }
+
+    private boolean canCross(int[] stones, int k, int n) {
+        int count = 0;
+        for (int stone : stones) {
+            if (stone - n < 0) {
+                count++;
+            } else {
+                count = 0;
+            }
+
+            if (count == k) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

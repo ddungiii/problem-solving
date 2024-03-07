@@ -1,57 +1,45 @@
 package programmers.level3.java;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
-
-class Path {
-    int start;
-    int end;
-    int length;
-
-    public Path(int start, int end, int length) {
-        this.start = start;
-        this.end = end;
-        this.length = length;
-    }
-}
+import java.util.Map;
 
 class Solution {
+
     public int[] solution(String[] gems) {
-        // 1. Get unique size
-        Set<String> uniqueGems = new HashSet<>(Arrays.asList(gems));
-        int uniqueSize = uniqueGems.size();
+        // 1. Get size
+        int size = new HashSet<>(Arrays.asList(gems)).size();
 
-        // 2. Loop
-        Set<String> set = new HashSet<>();
-        Path shortestPath = new Path(0, gems.length - 1, gems.length);
+        // 2. Two pointer
+        Map<String, Integer> map = new HashMap<>();
+        int[] answer = new int[2];
+        answer[0] = 1;
+        answer[1] = gems.length;
 
-        for (int i = 0; i < gems.length; i++) {
-            Path path = new Path(i, gems.length - 1, gems.length - i);
+        int shortest = gems.length;
+        int start = 0;
 
-            for (int j = i; j < gems.length; j++) {
-                set.add(gems[j]);
-                path.length = j - i + 1;
+        for (int end = 0; end < gems.length; end++) {
+            map.put(gems[end], map.getOrDefault(gems[end], 0) + 1);
 
-                if (path.length >= shortestPath.length) {
-                    set.clear();
-                    break;
-                }
-
-                if (set.size() == uniqueSize) {
-                    path.end = j;
-
-                    if (path.length < shortestPath.length) {
-                        shortestPath = path;
-                    }
-
-                    set.clear();
-                    break;
-                }
+            while (map.size() < size) {
+                end++;
+                map.put(gems[end], map.getOrDefault(gems[end], 0) + 1);
             }
 
+            while (start < end && map.get(gems[start]) > 1) {
+                map.put(gems[start], map.get(gems[start]) - 1);
+                start++;
+            }
+
+            if (end - start + 1 < shortest) {
+                shortest = end - start + 1;
+                answer[0] = start + 1;
+                answer[1] = end + 1;
+            }
         }
 
-        return new int[] { shortestPath.start + 1, shortestPath.end + 1 };
+        return answer;
     }
 }

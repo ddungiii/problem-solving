@@ -1,37 +1,36 @@
 import java.util.Scanner;
 
 class Main {
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
         int n = Integer.parseInt(sc.nextLine());
         int[] dp = new int[n + 1];
 
-        int answer = dfs(n, 0, dp);
+        long answer = count(n);
         System.out.println(answer);
     }
 
-    private static int dfs(int n, int index, int[] dp) {
-        if (n == index) {
-            return 1;
-        }
+    // private static int dfs(int n, int index, int[] dp) {
+    // if (n == index) {
+    // return 1;
+    // }
 
-        if (dp[index] != 0) {
-            return dp[index];
-        }
+    // if (dp[index] != 0) {
+    // return dp[index];
+    // }
 
-        int result = 0;
-        result += dfs(n, index + 1, dp);
-        if (n - index >= 2) {
-            result += dfs(n, index + 2, dp);
-        }
+    // dp[index] += dfs(n, index + 1, dp);
+    // if (n - index >= 2) {
+    // dp[index] += dfs(n, index + 2, dp);
+    // }
 
-        dp[index] = result;
-        return result;
-    }
+    // return dp[index];
+    // }
 
-    private static int count(int n) {
-        int[] dp = new int[n + 1];
+    private static long count(int n) {
+        long[] dp = new long[n + 1];
 
         dp[0] = 1;
         dp[1] = 1;

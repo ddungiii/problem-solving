@@ -1,25 +1,31 @@
-def dfs(q1, q2, count):
-    if count == len(q1) + len(q2):
-        return count
-
-    if len(q1) == 0 or len(q1) == 0:
-        return -1
-
-    return min(
-        dfs([q2[0]] + q1, q2[1:], count + 1),
-        dfs(q1[1:], [q1[0]] + q2, count + 1),
-    )
+import collections
 
 
 def solution(queue1, queue2):
-    # 1. If sum is odd, FAIL
-    sum1 = sum(queue1)
-    sum2 = sum(queue2)
-    if (sum1 + sum2) % 2 != 0:
+    q1 = collections.deque(queue1)
+    q2 = collections.deque(queue2)
+    s1, s2 = sum(q1), sum(q2)
+
+    if (s1 + s2) % 2 != 0:
         return -1
 
-    # 2. DFS? (BRUTE FORCE?)
-    return dfs(queue1, queue2, 0)
+    count = 0
+    max_count = s1 * 3  # why?
+    while count < max_count:
+        if s1 == s2:
+            return count
+
+        elif s1 > s2:
+            q2.append(q1.popleft())
+
+        elif s2 > s1:
+            q1.append(q2.popleft())
+
+        s1 = sum(q1)
+        s2 = sum(q2)
+        count += 1
+
+    return -1
 
 
 print(

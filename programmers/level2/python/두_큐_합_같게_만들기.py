@@ -16,13 +16,17 @@ def solution(queue1, queue2):
             return count
 
         elif s1 > s2:
-            q2.append(q1.popleft())
+            e = q1.popleft()
+            q2.append(e)
+            s1 -= e
+            s2 += e
 
         elif s2 > s1:
-            q1.append(q2.popleft())
+            e = q2.popleft()
+            q1.append(e)
+            s2 -= e
+            s1 += e
 
-        s1 = sum(q1)
-        s2 = sum(q2)
         count += 1
 
     return -1

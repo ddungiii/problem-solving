@@ -1,3 +1,20 @@
+from bisect import bisect_left, insort_right
+
+
+def binary_search(list, num):
+    low = 0
+    high = len(list)
+
+    while low < high:
+        mid = (low + high) // 2
+        if num <= list[mid]:
+            high = mid
+        else:
+            low = mid + 1
+
+    return low
+
+
 def solution(info, query):
     languages = ["java", "python", "cpp"]
     job = ["frontend", "backend"]
@@ -14,7 +31,7 @@ def solution(info, query):
         y_i = year.index(y)
         f_i = food.index(f)
 
-        tree[l_i][j_i][y_i][f_i].append(int(point))
+        insort_right(tree[l_i][j_i][y_i][f_i], int(point))
 
     # 2. Querying
     answer = []
@@ -32,10 +49,11 @@ def solution(info, query):
             for j_i in j_indexes:
                 for y_i in y_indexes:
                     for f_i in f_indexes:
-
-                        count += len(
-                            [a for a in tree[l_i][j_i][y_i][f_i] if a >= int(point)]
-                        )
+                        target = tree[l_i][j_i][y_i][f_i]
+                        if not target:
+                            continue
+                        lowest_index = bisect_left(target, int(point))
+                        count += len(target) - lowest_index
 
         answer.append(count)
 
@@ -48,6 +66,9 @@ print(
             "java backend junior pizza 150",
             "python frontend senior chicken 210",
             "python frontend senior chicken 150",
+            "python frontend senior chicken 302",
+            "python frontend senior chicken 1",
+            "python frontend senior chicken 5930",
             "cpp backend senior pizza 260",
             "java backend junior chicken 80",
             "python backend senior chicken 50",
@@ -55,6 +76,7 @@ print(
         [
             "java and backend and junior and pizza 100",
             "python and frontend and senior and chicken 200",
+            "python and frontend and senior and chicken 302",
             "cpp and - and senior and pizza 250",
             "- and backend and senior and - 150",
             "- and - and - and chicken 100",

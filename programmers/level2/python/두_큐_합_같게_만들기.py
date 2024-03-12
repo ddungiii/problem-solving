@@ -10,7 +10,15 @@ def solution(queue1, queue2):
         return -1
 
     count = 0
-    max_count = s1 * 3  # why?
+    # Why len(q1) * 3 require?
+    # Because q2+q1, q1+q2 is different
+    #
+    # 1. len(q1) : q1: -, q2: q2+q1
+    # 2. len(q1) : q1: q2, q2: q1 (return)
+    # 3. len(q1) : q1: q2+q1, q2: -
+    #
+    # => 1+2+3 = len(q1) * 3
+    max_count = len(q1) * 3
     while count < max_count:
         if s1 == s2:
             return count

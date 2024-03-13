@@ -13,7 +13,7 @@ def update_max(apeach, ryan):
             point_ryan += 10 - i
 
     new_point = point_ryan - point_apeach
-    if new_point >= point:
+    if new_point > point:
         point = new_point
         answer = ryan
 
@@ -24,7 +24,7 @@ def dfs(info, n, i, l):
         update_max(info, l)
         return
 
-    for j in range(i, 11):
+    for j in range(10, i - 1, -1):
         p = info[j]
         new_point = p + 1 if n > p + 1 else n
 

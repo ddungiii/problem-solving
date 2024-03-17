@@ -25,13 +25,18 @@ def can_go(a, b, place):
     X
     P
     """
-    diff = (b[0] - a[0] - 1, b[1] - a[1] - 1)
-    if diff[0] >= 0:
-        if place[a[0] + diff[0]][b[1]] != "X":
-            return True
+    betweens = []
+    if abs(a[0] - b[0]) == 2:
+        betweens.append(((a[0] + (b[0] - a[0]) // 2), a[1]))
+    elif abs(a[1] - b[1]) == 2:
+        betweens.append((a[0], a[1] + (b[1] - a[1]) // 2))
+    else:
+        betweens.append((a[0], b[1]))
+        betweens.append((b[0], a[1]))
 
-    if diff[1] >= 0:
-        if place[b[0]][a[1] + diff[1]] != "X":
+    # 안막혀있으면 무조건 can go
+    for between in betweens:
+        if place[between[0]][between[1]] != "X":
             return True
 
     return False
@@ -40,7 +45,6 @@ def can_go(a, b, place):
 def has_neighbor(p, ps, place):
     neighbors = [n for n in ps if cal_distance(p, n) <= 2]
     for neighbor in neighbors:
-        print(p, neighbor, can_go(p, neighbor, place))
         if can_go(p, neighbor, place):
             return True
 
@@ -48,7 +52,6 @@ def has_neighbor(p, ps, place):
 
 
 def is_safe(place):
-    print("room")
     ps = get_ps(place)
     if len(ps) <= 1:
         return 1

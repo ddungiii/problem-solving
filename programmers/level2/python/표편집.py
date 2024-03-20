@@ -1,37 +1,27 @@
 def up(table, k, x):
-    while x > 0:
-        k -= 1
-        while table[k] == "X":
-            k -= 1
-
-        x -= 1
+    for i in range(x):
+        k = table[k][0]
 
     return k
 
 
 def down(table, k, x):
-    while x > 0:
-        k += 1
-        while table[k] == "X":
-            k += 1
-
-        x -= 1
+    for i in range(x):
+        k = table[k][1]
 
     return k
 
 
 def is_last(table, k):
-    for deleted in table[k:]:
-        if deleted == "O":
-            return False
-
-    return True
+    return table[k][1] == -1
 
 
 def solution(n, k, cmd):
-    # 1. Create table, Delete Queue
-    table = ["O"] * n
-    delete_queue = []
+    # 1. Create table, Delete Stack
+    table = {i: [i - 1, i + 1] for i in range(n)}
+    table[n - 1] = [n - 2, -1]
+    delete_stack = []
+    answer = ["O"] * n
 
     for stmt in cmd:
         splited = stmt.split(" ")
@@ -46,8 +36,15 @@ def solution(n, k, cmd):
             k = down(table, k, int(operand))
 
         elif operator == "C":
-            table[k] = "X"
-            delete_queue.append(k)
+            delete_stack.append(k)
+            answer[k] = "X"
+
+            prev, next = table[k]
+
+            if prev != -1:
+                table[prev][1] = next
+            if next != -1:
+                table[next][0] = prev
 
             if is_last(table, k):
                 k = up(table, k, 1)
@@ -55,7 +52,13 @@ def solution(n, k, cmd):
                 k = down(table, k, 1)
 
         elif operator == "Z":
-            poped = delete_queue.pop()
-            table[poped] = "O"
+            poped = delete_stack.pop()
+            answer[poped] = "O"
+            prev, next = table[poped]
 
-    return "".join(table)
+            if prev != -1:
+                table[prev][1] = poped
+            if next != -1:
+                table[next][0] = poped
+
+    return "".join(answer)

@@ -1,46 +1,22 @@
 import collections
-import math
-import copy
-
-MAX = 100_000_000
+import heapq
 
 
-def dfs(graph, visited, node, target, intensity):
-    if node == target:
-        return intensity
+def dijkstra(graph, gates):
+    intensities = collections.defaultdict(int)
+    Q = [(0, gate) for gate in gates]
 
-    visited.add(node)
-    count = 0
-    for neighbor, w in graph[node]:
-        if neighbor not in visited:
-            max_intensity = max(intensity, w)
-            intensity = min(
-                intensity,
-                dfs(graph, copy.deepcopy(visited), neighbor, target, max_intensity),
-            )
-            count += 1
+    while Q:
+        intensity, node = heapq.heappop(Q)
+        if node in intensities:
+            continue
 
-    if not count:
-        return MAX
+        intensities[node] = intensity
+        for v, inten in graph[node]:
+            new_inten = max(inten, intensity)
+            heapq.heappush(Q, (new_inten, v))
 
-    return intensity
-
-
-def find_path(graph, gate, summit):
-    shortest = MAX
-    for neighbor, w in graph[summit]:
-        shortest = min(shortest, dfs(graph, set([summit]), neighbor, gate, w))
-
-    return shortest
-
-
-def get_shortest(graph, gates, summit):
-    shortest = MAX
-    for gate in gates:
-        intensity = find_path(graph, gate, summit)
-        shortest = min(shortest, intensity)
-
-    return summit, shortest
+    return intensities
 
 
 def solution(n, paths, gates, summits):
@@ -51,14 +27,10 @@ def solution(n, paths, gates, summits):
         graph[i].append((j, w))
         graph[j].append((i, w))
 
-    answer = []
-    for summit in summits:
-        answer.append(get_shortest(graph, gates, summit))
+    intensities = dijkstra(graph, gates)
+    submit_inten = [
+        (inten, intensities[inten]) for inten in intensities if inten in summits
+    ]
+    submit_inten.sort(key=lambda x: (x[1], x[0]))
 
-    # sort by intensity, summit
-    answer.sort(key=lambda x: (x[1], x[0]))
-
-    return answer[0]
-
-
-s
+    return submit_inten[0]

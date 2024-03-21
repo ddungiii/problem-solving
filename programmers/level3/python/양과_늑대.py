@@ -1,41 +1,25 @@
 import collections
 
-"""
-Challenges
-
-1. 어떻게 다시 백트래킹 할 것인가?
-    -> visited를 해도 다시 가야함
-"""
-
-visited = collections.defaultdict(lambda: False)
+max_sheep = 0
 
 
-def get_family_size(tree, parent):
-    if len(tree[parent]) == 0:
-        return 1
+def dfs(info, tree, parent, sheep, wolf, nexts):
+    global max_sheep
 
-    count = 0
-    for child in tree[parent]:
-        count += get_family_size(tree, child)
+    sheep += info[parent] ^ 1
+    wolf += info[parent]
 
-    return count + 1
-
-
-def search(info, tree, parent, sheep, wolf):
-    is_sheep = info[parent] == 0
-    if not visited[parent]:
-        if is_sheep:
-            sheep += 1
-        else:
-            wolf += 1
-
-    visited[parent] = True
-
-    if not is_sheep:
+    max_sheep = max(max_sheep, sheep)
+    if sheep <= wolf:
         return
-    family_size = get_family_size(tree, parent)
 
-    return 1
+    for child in tree[parent]:
+        nexts.add(child)
+
+    for i, next in enumerate(nexts):
+        new_nexts = set(nexts)
+        new_nexts.remove(next)
+        dfs(info, tree, next, sheep, wolf, new_nexts)
 
 
 def solution(info, edges):
@@ -45,5 +29,5 @@ def solution(info, edges):
         p, c = edge
         tree[p].append(c)
 
-    # 2. Search with Back Tracking, greedy
-    return search(info, tree, 0, 0, 0)
+    dfs(info, tree, 0, 0, 0, set(tree[0]))
+    return max_sheep

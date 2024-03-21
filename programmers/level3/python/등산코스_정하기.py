@@ -24,8 +24,13 @@ def solution(n, paths, gates, summits):
     graph = collections.defaultdict(list)
     for path in paths:
         i, j, w = path
-        graph[i].append((j, w))
-        graph[j].append((i, w))
+        if i in gates or j in summits:
+            graph[i].append((j, w))
+        elif j in gates or i in summits:
+            graph[j].append((i, w))
+        else:
+            graph[i].append((j, w))
+            graph[j].append((i, w))
 
     intensities = dijkstra(graph, gates)
     submit_inten = [

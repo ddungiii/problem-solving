@@ -7,21 +7,14 @@
 # @lc code=start
 
 
+import bisect
+
+
 class Solution:
     def search(self, nums: list[int], target: int) -> int:
-        low, high = 0, len(nums) - 1
+        index = bisect.bisect_left(nums, target, hi=len(nums) - 1)
 
-        while low <= high:
-            mid = (low + high) // 2
-            if nums[mid] == target:
-                return mid
-
-            if nums[mid] < target:
-                low = mid + 1
-            else:
-                high = mid - 1
-
-        return -1
+        return index if nums[index] == target else -1
 
 
 # @lc code=end

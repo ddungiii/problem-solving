@@ -8,15 +8,19 @@
 # @lc code=start
 class Solution:
     def twoSum(self, numbers: list[int], target: int) -> list[int]:
-        d = {}
-        for i in range(len(numbers)):
-            number = numbers[i]
-            remain = target - number
-            if remain not in d:
-                d[number] = i
+        l, r = 0, len(numbers) - 1
+        while l < r:
+            sum = numbers[l] + numbers[r]
+
+            if sum < target:
+                l += 1
+            elif sum > target:
+                r -= 1
             else:
-                # 1-indexing
-                return [d[remain] + 1, i + 1]
+                return [l + 1, r + 1]
+
+        # never reach
+        return []
 
 
 # @lc code=end

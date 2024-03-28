@@ -6,21 +6,16 @@
 
 
 # @lc code=start
+import bisect
+
+
 class Solution:
     def twoSum(self, numbers: list[int], target: int) -> list[int]:
-        l, r = 0, len(numbers) - 1
-        while l < r:
-            sum = numbers[l] + numbers[r]
-
-            if sum < target:
-                l += 1
-            elif sum > target:
-                r -= 1
-            else:
-                return [l + 1, r + 1]
-
-        # never reach
-        return []
+        for i, number in enumerate(numbers):
+            remain = target - number
+            j = bisect.bisect_left(numbers, remain, lo=i + 1, hi=len(numbers) - 1)
+            if numbers[j] == remain:
+                return [i + 1, j + 1]
 
 
 # @lc code=end

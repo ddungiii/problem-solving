@@ -6,14 +6,20 @@
 
 
 # @lc code=start
+import bisect
+
+
 class Solution:
     def searchMatrix(self, matrix: list[list[int]], target: int) -> bool:
+        def binary_search(l):
+            i = bisect.bisect_left(l, target, hi=M - 1)
+            return l[i] == target
+
         N, M = len(matrix), len(matrix[0])
 
         for r in range(N):
-            for c in range(M):
-                if matrix[r][c] == target:
-                    return True
+            if binary_search(matrix[r]):
+                return True
 
         return False
 

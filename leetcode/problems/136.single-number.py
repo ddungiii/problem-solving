@@ -6,15 +6,13 @@
 
 
 # @lc code=start
-from collections import Counter
-
-
 class Solution:
     def singleNumber(self, nums: list[int]) -> int:
-        counter = Counter(nums)
-        for key in counter:
-            if counter[key] == 1:
-                return key
+        result = 0
+        for num in nums:
+            result ^= num
+
+        return result
 
 
 # @lc code=end

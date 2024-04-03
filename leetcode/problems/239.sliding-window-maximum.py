@@ -6,12 +6,29 @@
 
 
 # @lc code=start
+import collections
+
+
 class Solution:
     def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
+        q = collections.deque()
+        curr_max = float("-inf")
         answer = []
-        for right in range(k, len(nums) + 1):
-            left = right - k
-            answer.append(max(nums[left:right]))
+
+        for i, v in enumerate(nums):
+            q.append(v)
+            if i < k - 1:
+                continue
+
+            if curr_max == float("-inf"):
+                curr_max = max(q)
+            elif v > curr_max:
+                curr_max = v
+
+            answer.append(curr_max)
+
+            if curr_max == q.popleft():
+                curr_max = float("-inf")
 
         return answer
 

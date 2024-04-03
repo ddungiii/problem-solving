@@ -11,24 +11,21 @@ import collections
 
 class Solution:
     def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
-        q = collections.deque()
-        curr_max = float("-inf")
         answer = []
+        q = collections.deque()  # store index
 
         for i, v in enumerate(nums):
-            q.append(v)
+            while q and nums[q[-1]] < v:
+                q.pop()
+            q.append(i)
             if i < k - 1:
                 continue
 
-            if curr_max == float("-inf"):
-                curr_max = max(q)
-            elif v > curr_max:
-                curr_max = v
+            left = i - k + 1
+            if q[0] < left:
+                q.popleft()
 
-            answer.append(curr_max)
-
-            if curr_max == q.popleft():
-                curr_max = float("-inf")
+            answer.append(nums[q[0]])
 
         return answer
 

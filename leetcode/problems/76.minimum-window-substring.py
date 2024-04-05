@@ -11,34 +11,36 @@ import collections
 
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        def check_substring(sub, t):
-            """
-            check sub contains all chars in t
-            """
-            counter = collections.Counter(sub)
-            for c in t:
-                count = counter[c]
-                if count == 0:
-                    return False
-                else:
-                    counter[c] -= 1
-
-            return True
-
         M, N = len(s), len(t)
         if M < N:
             return ""
 
-        window_size = N
-        while window_size <= M:
-            for r in range(window_size, M + 1):
-                l = r - window_size
-                if check_substring(s[l:r], t):
-                    return s[l:r]
+        need = collections.Counter(t)
+        missing = N
+        left = start = end = 0
 
-            window_size += 1
+        for right, char in enumerate(s, 1):
+            missing -= need[char] > 0
+            need[char] -= 1
 
-        return ""
+            if missing == 0:
+                # move until missing == 0
+                while left < right and need[s[left]] < 0:
+                    need[s[left]] += 1
+                    left += 1
+
+                # update start, end
+                best_min = end - start
+                curr_min = right - left
+                if not end or curr_min < best_min:
+                    start, end = left, right
+
+                # move left
+                need[s[left]] += 1
+                missing += 1
+                left += 1
+
+        return s[start:end]
 
 
 # @lc code=end

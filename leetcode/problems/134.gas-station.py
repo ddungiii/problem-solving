@@ -26,9 +26,14 @@ class Solution:
 
             return start
 
+        def get_start_candidates():
+            return sorted(
+                [i for i in range(N)], key=lambda x: gas[x] - cost[x], reverse=True
+            )
+
         N = len(gas)
 
-        for start in range(N):
+        for start in get_start_candidates():
             result = travel(start)
             if result >= 0:
                 return result

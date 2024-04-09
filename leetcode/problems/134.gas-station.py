@@ -31,6 +31,9 @@ class Solution:
                 [i for i in range(N)], key=lambda x: gas[x] - cost[x], reverse=True
             )
 
+        if sum(gas) < sum(cost):
+            return -1
+
         N = len(gas)
 
         for start in get_start_candidates():

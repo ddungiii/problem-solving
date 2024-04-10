@@ -41,25 +41,43 @@ class Solution:
             l1, l2 = l2, l1
 
         new_num = ListNode()
+        nodes = [new_num]
+
         node = new_num
+        index = 0
         for _ in range(N - M):
             node.next = ListNode()
             node = node.next
             node.val = l1.val
+
+            nodes.append(node)
+            index += 1
 
             l1 = l1.next
 
         while l1:
             s = l1.val + l2.val
             carry_in, carry_out = s // 10, s - (s // 10 * 10)
-            node.val += carry_in
+
+            prev_index = index
+            while carry_in:
+                prev_node = nodes[prev_index]
+                prev_node.val += carry_in
+
+                if prev_node.val < 10:
+                    break
+
+                prev_node.val -= 10
+                prev_index -= 1
 
             node.next = ListNode(carry_out)
             node = node.next
+            nodes.append(node)
+            index += 1
 
             l1, l2 = l1.next, l2.next
 
-        return new_num.next
+        return new_num if new_num.val > 0 else new_num.next
 
 
 # @lc code=end
